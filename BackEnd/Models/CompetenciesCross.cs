@@ -11,7 +11,7 @@ public partial class CompetenciesCross
 
     public int? CompSubId { get; set; }
 
-    public virtual Competency? CompMain { get; set; }
+    public virtual Competencies? CompMain { get; set; }
 
-    public virtual Competency IdNavigation { get; set; } = null!;
+    public virtual Competencies IdNavigation { get; set; } = null!;
 }

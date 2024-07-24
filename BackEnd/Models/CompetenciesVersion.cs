@@ -11,17 +11,17 @@ public partial class CompetenciesVersion
 
     public string? IdNumber { get; set; }
 
-    public string? CompetencyName { get; set; }
+    public string? CompetenceName { get; set; }
 
-    public int? CompetencyType { get; set; }
+    public int? CompetenceType { get; set; }
 
-    public string? CompetencyDetails { get; set; }
+    public string? CompetenceDetails { get; set; }
 
-    public int? CompetencyParentId { get; set; }
+    public int? CompetenceParentId { get; set; }
 
-    public bool? CompetencyActive { get; set; }
+    public bool? CompetenceActive { get; set; }
 
-    public int? CompetencyLevel { get; set; }
+    public int? CompetenceLevel { get; set; }
 
     public DateTime? VersionDateCreated { get; set; }
 

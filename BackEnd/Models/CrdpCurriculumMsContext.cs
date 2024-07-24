@@ -33,7 +33,7 @@ public partial class CrdpCurriculumMsContext : DbContext
 
     public virtual DbSet<CompetenciesVersion> CompetenciesVersions { get; set; }
 
-    public virtual DbSet<Competency> Competencies { get; set; }
+    public virtual DbSet<Competencies> Competencies { get; set; }
 
     public virtual DbSet<ConceptTree> ConceptTrees { get; set; }
 
@@ -156,18 +156,18 @@ public partial class CrdpCurriculumMsContext : DbContext
 
         modelBuilder.Entity<CompetenciesVersion>(entity =>
         {
-            entity.Property(e => e.CompetencyDetails).HasMaxLength(500);
-            entity.Property(e => e.CompetencyName).HasMaxLength(500);
+            entity.Property(e => e.CompetenceDetails).HasMaxLength(500);
+            entity.Property(e => e.CompetenceName).HasMaxLength(500);
             entity.Property(e => e.DateCreated).HasColumnType("datetime");
             entity.Property(e => e.DateModified).HasColumnType("datetime");
             entity.Property(e => e.IdNumber).HasMaxLength(50);
             entity.Property(e => e.VersionDateCreated).HasColumnType("datetime");
         });
 
-        modelBuilder.Entity<Competency>(entity =>
+        modelBuilder.Entity<Competencies>(entity =>
         {
-            entity.Property(e => e.CompetencyDetails).HasMaxLength(500);
-            entity.Property(e => e.CompetencyName).HasMaxLength(500);
+            entity.Property(e => e.CompetenceDetails).HasMaxLength(500);
+            entity.Property(e => e.CompetenceName).HasMaxLength(500);
             entity.Property(e => e.DateCreated).HasColumnType("datetime");
             entity.Property(e => e.DateModified).HasColumnType("datetime");
             entity.Property(e => e.IdNumber).HasMaxLength(50);

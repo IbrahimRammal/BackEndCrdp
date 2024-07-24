@@ -11,5 +11,5 @@ public partial class CompetenciesDomain
 
     public int? DomainId { get; set; }
 
-    public virtual Competency? CidNavigation { get; set; }
+    public virtual Competencies? CidNavigation { get; set; }
 }

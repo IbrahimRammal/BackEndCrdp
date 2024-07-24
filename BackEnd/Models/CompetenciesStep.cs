@@ -19,5 +19,5 @@ public partial class CompetenciesStep
 
     public int? Cid { get; set; }
 
-    public virtual Competency? CidNavigation { get; set; }
+    public virtual Competencies? CidNavigation { get; set; }
 }

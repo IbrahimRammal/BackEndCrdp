@@ -30,7 +30,7 @@ namespace BackEnd.Controllers
         }
 
         // GET: api/Codes/5
-        [HttpGet("{id}")]
+        [HttpGet("GetCodesbyId{id}")]
         public async Task<ActionResult<Code>> GetCodes(int id)
         {
             var code = await _context.Codes.FindAsync(id);
@@ -45,8 +45,8 @@ namespace BackEnd.Controllers
 
         // PUT: api/Codes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCode(int id, Code code)
+        [HttpPut("UpdateCode{id}")]
+        public async Task<IActionResult> UpdateCode(int id, Code code)
         {
             if (id != code.Id)
             {
@@ -72,34 +72,7 @@ namespace BackEnd.Controllers
             }
 
             return NoContent();
-        }
-        [HttpPut("UpdateCode")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public async Task<bool> UpdateCode([FromForm] IFormCollection form)
-        {
-            try
-            {
-                var key = form["key"];
-                var values = form["values"];
-                var code = _context.Codes.First(o => o.Id.Equals(key.ToString()));
-
-                JsonConvert.PopulateObject(values, code);
-
-                //Validate(order);
-                //if (!ModelState.IsValid)
-                //    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState.GetFullErrorMessage());
-
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-
-                return false;
-            }
-
-
-            return true;
-        }
+        } 
         // POST: api/Codes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("InsertCode")]

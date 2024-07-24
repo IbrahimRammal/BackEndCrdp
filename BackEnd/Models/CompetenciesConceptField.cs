@@ -11,5 +11,5 @@ public partial class CompetenciesConceptField
 
     public int? ConceptFieldId { get; set; }
 
-    public virtual Competency? CidNavigation { get; set; }
+    public virtual Competencies? CidNavigation { get; set; }
 }
