@@ -49,9 +49,13 @@ public partial class CrdpCurriculumMsContext : DbContext
 
     public virtual DbSet<UserRolePermission> UserRolePermissions { get; set; }
 
+
+
+    // public string Connection = "Server=THINKBOOK14 ;Database=CrdpCurriculumMS;User Id=sa;Password=123456;TrustServerCertificate=True;";
+    public string Connection = "Server=52.169.111.157; Database=CrdpCurriculumMS; User Id=sa; Password=CRDP@123; TrustServerCertificate=True;";
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=52.169.111.157; Database=CrdpCurriculumMS; User Id=sa; Password=CRDP@123; TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer(Connection);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

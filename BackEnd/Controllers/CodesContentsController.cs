@@ -33,8 +33,8 @@ namespace BackEnd.Controllers
         }
 
         // GET: api/CodesContents/5
-        [HttpGet("GetCodesContents{id}")]
-        public async Task<ActionResult<CodesContent>> GetCodesContents(int id)
+        [HttpGet("GetCodesContentsbyid{id}")]
+        public async Task<ActionResult<CodesContent>> GetCodesContentsbyid(int id)
         {
             var codeContents = await _context.CodesContents.FindAsync(id);
 
@@ -46,8 +46,8 @@ namespace BackEnd.Controllers
             return codeContents;
         }
 
-        [HttpGet("GetCodesContentByCodeId{id}")]
-        public async Task<ActionResult<CodesContent>> GetCodesContentByCodeId(int id)
+        [HttpGet("GetCodesContentsByCodeId{id}")]
+        public async Task<ActionResult<CodesContent>> GetCodesContentsByCodeId(int id)
         {
 
             var codeContents = await _context.CodesContents
@@ -67,7 +67,7 @@ namespace BackEnd.Controllers
         // PUT: api/CodesContents/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCodeContents(int id, CodesContent codeContents)
+        public async Task<IActionResult> PutCodesContents(int id, CodesContent codeContents)
         {
             if (id != codeContents.Id)
             {
@@ -95,39 +95,49 @@ namespace BackEnd.Controllers
             return NoContent();
         }
      
-        [HttpPut("UpdateCodeContents")]
+        [HttpPut("UpdateCodesContents")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<bool> UpdateCodesContents([FromForm] IFormCollection form)
+        public async Task<IActionResult> UpdateCodesContents([FromForm] IFormCollection form)
         {
             try
             {
                 var key = form["key"];
                 var values = form["values"];
-                var codeContents = _context.CodesContents.First(o => o.Id.Equals(key.ToString()));
 
-                JsonConvert.PopulateObject(values, codeContents);
+                // Convert the key to int before using it to find the entity
+                if (!int.TryParse(key, out int id))
+                {
+                    return BadRequest("Invalid key format.");
+                }
 
-                //Validate(order);
-                //if (!ModelState.IsValid)
-                //    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState.GetFullErrorMessage());
+                var code = await _context.CodesContents.FindAsync(id); // Use the converted int here
 
+                // Check if the code exists
+                if (code == null)
+                {
+                    return NotFound("Code not found.");
+                }
+
+                // Update code values
+                JsonConvert.PopulateObject(values, code);
+
+                // Save changes
                 await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Code updated successfully." });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                return false;
+                // Return an error response in case of an exception
+                return StatusCode(500, new { success = false, message = ex.Message });
             }
-
-
-            return true;
         }
-        
+
         // POST: api/Codes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("InsertCodeContents")]
+        [HttpPost("InsertCodesContents")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<ActionResult<CodesContent>> PostCodeContents([FromForm] IFormCollection form)
+        public async Task<ActionResult<CodesContent>> PostCodesContents([FromForm] IFormCollection form)
         {
             var codeContents = new CodesContent();
             try
@@ -152,11 +162,21 @@ namespace BackEnd.Controllers
         }
 
         // DELETE: api/CodesContents/5
-        [HttpDelete("DeleteCodeContents")]
+        [HttpDelete("DeleteCodesContents")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<IActionResult> DeleteCodeContents([FromForm] IFormCollection form)
+        public async Task<IActionResult> DeleteCodesContents([FromForm] IFormCollection form)
         {
-            var key = form["key"];
+            var keyString = form["key"];
+
+            // Parse the key as an integer
+            if (!int.TryParse(keyString, out int key))
+            {
+                // If parsing fails, return a BadRequest response
+                return BadRequest("Invalid key format.");
+            }
+
+
+
             var codeContents = await _context.CodesContents.FindAsync(key);
             if (codeContents == null)
             {

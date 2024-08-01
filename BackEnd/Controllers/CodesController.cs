@@ -10,10 +10,12 @@ namespace BackEnd.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class CodesController : ControllerBase
+
     {
         private readonly CrdpCurriculumMsContext _context;
-    
         private readonly IConfiguration _configuration;
+
+
 
         public CodesController(CrdpCurriculumMsContext context, IConfiguration configuration)
         {
@@ -30,49 +32,95 @@ namespace BackEnd.Controllers
         }
 
         // GET: api/Codes/5
-        [HttpGet("GetCodesbyId{id}")]
-        public async Task<ActionResult<Code>> GetCodes(int id)
+        [HttpGet("GetCodesById/{id}")]
+        public async Task<IActionResult> GetCodesById(int id)
         {
             var code = await _context.Codes.FindAsync(id);
-
             if (code == null)
             {
                 return NotFound();
             }
-
-            return code;
+            return Ok(code);
         }
 
         // PUT: api/Codes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("UpdateCode{id}")]
-        public async Task<IActionResult> UpdateCode(int id, Code code)
+        [HttpPut("UpdateCode00")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public async Task<IActionResult> UpdateCode([FromForm] IFormCollection form)
         {
-            if (id != code.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(code).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CodeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                var key = form["key"];
+                var values = form["values"];
 
-            return NoContent();
-        } 
+                // تحقق من صحة الـ key
+                if (!int.TryParse(key, out int id))
+                {
+                    return BadRequest("Invalid key format.");
+                }
+
+                var code = _context.Codes.FirstOrDefault(o => o.Id == id);
+
+                // تحقق من وجود الكود
+                if (code == null)
+                {
+                    return NotFound("Code not found.");
+                }
+
+                // تحديث بيانات الكود
+                JsonConvert.PopulateObject(values, code);
+
+                // حفظ التغييرات
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Code updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                // إعادة استجابة خطأ في حالة حدوث استثناء
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+        [HttpPut("UpdateCode")]
+        ////[Consumes("application/json")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public async Task<IActionResult> UpdateCodes([FromForm] IFormCollection form)
+        {
+            try
+            {
+                var key = form["key"];
+                var values = form["values"];
+
+                // Convert the key to int before using it to find the entity
+                if (!int.TryParse(key, out int id))
+                {
+                    return BadRequest("Invalid key format.");
+                }
+
+                var code = await _context.Codes.FindAsync(id); // Use the converted int here
+
+                // Check if the code exists
+                if (code == null)
+                {
+                    return NotFound("Code not found.");
+                }
+
+                // Update code values
+                JsonConvert.PopulateObject(values, code);
+
+                // Save changes
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Code updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                // Return an error response in case of an exception
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
         // POST: api/Codes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("InsertCode")]
@@ -107,12 +155,20 @@ namespace BackEnd.Controllers
         public async Task<IActionResult> DeleteCode([FromForm] IFormCollection form)
         {
             var key = form["key"];
-            var code = await _context.Codes.FindAsync(key);
+
+            // Convert the key to int before using it to find the entity
+            if (!int.TryParse(key, out int id))
+            {
+                return BadRequest("Invalid key format.");
+            }
+
+            var code = await _context.Codes.FindAsync(id); // Use the converted int here
+
             if (code == null)
             {
                 return NotFound();
             }
-            
+
             _context.Codes.Remove(code);
             await _context.SaveChangesAsync();
 

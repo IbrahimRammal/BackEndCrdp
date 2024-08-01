@@ -33,8 +33,8 @@ namespace BackEnd.Controllers
         }
 
         // GET: api/ConceptTrees/5
-        [HttpGet("GetConceptTrees{id}")]
-        public async Task<ActionResult<ConceptTree>> GetConceptTrees(int id)
+        [HttpGet("GetConceptTreesById{id}")]
+        public async Task<ActionResult<ConceptTree>> GetConceptTreesById(int id)
         {
             var ConceptTrees = await _context.ConceptTrees.FindAsync(id);
 
@@ -50,33 +50,43 @@ namespace BackEnd.Controllers
 
         // PUT: api/ConceptTrees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("UpdateConceptTrees{id}")]
-        public async Task<IActionResult> PutConceptTrees(int id, ConceptTree ConceptTrees)
+        [HttpPut("UpdateConceptTrees")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public async Task<IActionResult> PutConceptTrees([FromForm] IFormCollection form)
         {
-            if (id != ConceptTrees.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(ConceptTrees).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ConceptTreesExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                var key = form["key"];
+                var values = form["values"];
 
-            return NoContent();
+                // Convert the key to int before using it to find the entity
+                if (!int.TryParse(key, out int id))
+                {
+                    return BadRequest("Invalid key format.");
+                }
+
+                var concept = await _context.ConceptTrees.FindAsync(id); // Use the converted int here
+
+                // Check if the concept exists
+                if (concept == null)
+                {
+                    return NotFound("concept not found.");
+                }
+
+                // Update concept values
+                JsonConvert.PopulateObject(values, concept);
+
+                // Save changes
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "concept updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                // Return an error response in case of an exception
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+       
         }
      
 
@@ -107,20 +117,29 @@ namespace BackEnd.Controllers
 
             return CreatedAtAction("GetConceptTrees", new { id = ConceptTrees.Id }, ConceptTrees);
         }
-
         // DELETE: api/ConceptTrees/5
         [HttpDelete("DeleteConceptTrees")]
         [Consumes("application/x-www-form-urlencoded")]
         public async Task<IActionResult> DeleteConceptTrees([FromForm] IFormCollection form)
         {
-            var key = form["key"];
-            var ConceptTrees = await _context.ConceptTrees.FindAsync(key);
-            if (ConceptTrees == null)
+            var keyString = form["key"];
+
+            // Parse the key as an integer
+            if (!int.TryParse(keyString, out int key))
+            {
+                // If parsing fails, return a BadRequest response
+                return BadRequest("Invalid key format.");
+            }
+
+
+
+            var concept = await _context.ConceptTrees.FindAsync(key);
+            if (concept == null)
             {
                 return NotFound();
             }
-            
-            _context.ConceptTrees.Remove(ConceptTrees);
+
+            _context.ConceptTrees.Remove(concept);
             await _context.SaveChangesAsync();
 
             return NoContent();

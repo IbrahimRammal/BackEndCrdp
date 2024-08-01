@@ -33,8 +33,8 @@ namespace BackEnd.Controllers
         }
 
         // GET: api/Competencies/5
-        [HttpGet("GetCompetencies{id}")]
-        public async Task<ActionResult<Competencies>> GetCompetencies(int id)
+        [HttpGet("GetCompetenciesById{id}")]
+        public async Task<ActionResult<Competencies>> GetCompetenciesById(int id)
         {
             var Competencies = await _context.Competencies.FindAsync(id);
 
@@ -49,34 +49,42 @@ namespace BackEnd.Controllers
 
 
         // PUT: api/Competencies/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("UpdateCompetencies{id}")]
-        public async Task<IActionResult> PutCompetencies(int id, Competencies Competencies)
+        [HttpPut("UpdateCompetencies")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public async Task<IActionResult> PutCompetencies([FromForm] IFormCollection form)
         {
-            if (id != Competencies.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(Competencies).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CompetenciesExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                var key = form["key"];
+                var values = form["values"];
 
-            return NoContent();
+                // Convert the key to int before using it to find the entity
+                if (!int.TryParse(key, out int id))
+                {
+                    return BadRequest("Invalid key format.");
+                }
+
+                var competence = await _context.Competencies.FindAsync(id); // Use the converted int here
+
+                // Check if the Competencies exists
+                if (competence == null)
+                {
+                    return NotFound("Competencies not found.");
+                }
+
+                // Update Competencies values
+                JsonConvert.PopulateObject(values, competence);
+
+                // Save changes
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Competencies updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                // Return an error response in case of an exception
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
         }
      
 
@@ -109,22 +117,51 @@ namespace BackEnd.Controllers
         }
 
         // DELETE: api/Competencies/5
+        //[HttpDelete("DeleteCompetencies")]
+        //[Consumes("application/x-www-form-urlencoded")]
+        //public async Task<IActionResult> DeleteCompetencies([FromForm] IFormCollection form)
+        //{
+        //    var key = form["key"];
+        //    var Competencies = await _context.Competencies.FindAsync(key);
+        //    if (Competencies == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    _context.Competencies.Remove(Competencies);
+        //    await _context.SaveChangesAsync();
+
+        //    return NoContent();
+        //}
+
+
+        // DELETE: api/Competencies/5
         [HttpDelete("DeleteCompetencies")]
         [Consumes("application/x-www-form-urlencoded")]
         public async Task<IActionResult> DeleteCompetencies([FromForm] IFormCollection form)
         {
-            var key = form["key"];
-            var Competencies = await _context.Competencies.FindAsync(key);
-            if (Competencies == null)
+            var keyString = form["key"];
+            // Parse the key as an integer
+            if (!int.TryParse(keyString, out int key))
+            {
+                // If parsing fails, return a BadRequest response
+                return BadRequest("Invalid key format.");
+            }
+
+
+
+            var competence = await _context.Competencies.FindAsync(key);
+            if (competence == null)
             {
                 return NotFound();
             }
-            
-            _context.Competencies.Remove(Competencies);
+
+            _context.Competencies.Remove(competence);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
+
 
         private bool CompetenciesExists(int id)
         {

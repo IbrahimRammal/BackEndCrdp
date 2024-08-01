@@ -1,12 +1,90 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\user\\Downloads\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|c:\\users\\user\\downloads\\backendcrdp-master\\backendcrdp-master\\backendcrdp\\backend\\controllers\\competenciescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|solutionrelative:backend\\controllers\\competenciescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|c:\\users\\user\\downloads\\backendcrdp-master\\backendcrdp-master\\backendcrdp\\backend\\controllers\\concepttreescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|solutionrelative:backend\\controllers\\concepttreescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|c:\\users\\user\\downloads\\backendcrdp-master\\backendcrdp-master\\backendcrdp\\backend\\controllers\\codescontentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|solutionrelative:backend\\controllers\\codescontentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|c:\\users\\user\\downloads\\backendcrdp-master\\backendcrdp-master\\backendcrdp\\backend\\controllers\\codescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|solutionrelative:backend\\controllers\\codescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CompetenciesController.cs",
+              "DocumentMoniker": "C:\\Users\\user\\Downloads\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\Controllers\\CompetenciesController.cs",
+              "RelativeDocumentMoniker": "BackEnd\\Controllers\\CompetenciesController.cs",
+              "ToolTip": "C:\\Users\\user\\Downloads\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\Controllers\\CompetenciesController.cs",
+              "RelativeToolTip": "BackEnd\\Controllers\\CompetenciesController.cs",
+              "ViewState": "AQIAAG4AAAAAAAAAAAAmwHoAAAALAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-31T14:25:16.581Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ConceptTreesController.cs",
+              "DocumentMoniker": "C:\\Users\\user\\Downloads\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\Controllers\\ConceptTreesController.cs",
+              "RelativeDocumentMoniker": "BackEnd\\Controllers\\ConceptTreesController.cs",
+              "ToolTip": "C:\\Users\\user\\Downloads\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\Controllers\\ConceptTreesController.cs",
+              "RelativeToolTip": "BackEnd\\Controllers\\ConceptTreesController.cs",
+              "ViewState": "AQIAABkAAAAAAAAAAAAAwHwAAAAoAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-31T11:30:58.27Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CodesContentsController.cs",
+              "DocumentMoniker": "C:\\Users\\user\\Downloads\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\Controllers\\CodesContentsController.cs",
+              "RelativeDocumentMoniker": "BackEnd\\Controllers\\CodesContentsController.cs",
+              "ToolTip": "C:\\Users\\user\\Downloads\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\Controllers\\CodesContentsController.cs",
+              "RelativeToolTip": "BackEnd\\Controllers\\CodesContentsController.cs",
+              "ViewState": "AQIAAKUAAAAAAAAAAAAkwLwAAAAfAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-30T21:05:08.523Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CodesController.cs",
+              "DocumentMoniker": "C:\\Users\\user\\Downloads\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\Controllers\\CodesController.cs",
+              "RelativeDocumentMoniker": "BackEnd\\Controllers\\CodesController.cs",
+              "ToolTip": "C:\\Users\\user\\Downloads\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\Controllers\\CodesController.cs",
+              "RelativeToolTip": "BackEnd\\Controllers\\CodesController.cs",
+              "ViewState": "AQIAAAsAAAAAAAAAAAAxwCMAAAA1AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-27T20:37:09.632Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
