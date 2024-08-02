@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace BackEnd.Models;
 
-public partial class CompetenciesDomain
+public partial class ConceptTreeClass
 {
     public int Id { get; set; }
 
-    public int? Cid { get; set; }
+    public int? Ctid { get; set; }
 
-    public int? DomainId { get; set; }
+    public int? ClassId { get; set; }
 
     public int? UserCreated { get; set; }
 
@@ -19,5 +19,5 @@ public partial class CompetenciesDomain
 
     public DateTime? DateModified { get; set; }
 
-    public virtual Competencies? CidNavigation { get; set; }
+    public virtual ConceptTree? Ct { get; set; }
 }

@@ -33,8 +33,8 @@ namespace BackEnd.Controllers
         }
 
         // GET: api/CodesContents/5
-        [HttpGet("GetCodesContentsbyid{id}")]
-        public async Task<ActionResult<CodesContent>> GetCodesContentsbyid(int id)
+        [HttpGet("GetCodesContentsById/{id}")]
+        public async Task<ActionResult<CodesContent>> GetCodesContentsById(int id)
         {
             var codeContents = await _context.CodesContents.FindAsync(id);
 
@@ -46,7 +46,7 @@ namespace BackEnd.Controllers
             return codeContents;
         }
 
-        [HttpGet("GetCodesContentsByCodeId{id}")]
+        [HttpGet("GetCodesContentsByCodeId/{id}")]
         public async Task<ActionResult<CodesContent>> GetCodesContentsByCodeId(int id)
         {
 

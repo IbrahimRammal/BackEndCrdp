@@ -8346,11 +8346,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\user\\Downloads\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\BackEnd.csproj",
+      "projectUniqueName": "D:\\Programs\\CRDPWebApplication\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\BackEnd.csproj",
       "projectName": "BackEnd",
-      "projectPath": "C:\\Users\\user\\Downloads\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\BackEnd.csproj",
+      "projectPath": "D:\\Programs\\CRDPWebApplication\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\BackEnd.csproj",
       "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\user\\Downloads\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\obj\\",
+      "outputPath": "D:\\Programs\\CRDPWebApplication\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\DevExpress 22.2\\Components\\Offline Packages",
@@ -8460,13 +8460,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1900",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json."
-    }
-  ]
+  }
 }

@@ -37,6 +37,12 @@ public partial class CrdpCurriculumMsContext : DbContext
 
     public virtual DbSet<ConceptTree> ConceptTrees { get; set; }
 
+    public virtual DbSet<ConceptTreeClass> ConceptTreeClasses { get; set; }
+
+    public virtual DbSet<ConfigCycleClass> ConfigCycleClasses { get; set; }
+
+    public virtual DbSet<ConfigDomainField> ConfigDomainFields { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<RoleService> RoleServices { get; set; }
@@ -49,13 +55,9 @@ public partial class CrdpCurriculumMsContext : DbContext
 
     public virtual DbSet<UserRolePermission> UserRolePermissions { get; set; }
 
-
-
-    // public string Connection = "Server=THINKBOOK14 ;Database=CrdpCurriculumMS;User Id=sa;Password=123456;TrustServerCertificate=True;";
-    public string Connection = "Server=52.169.111.157; Database=CrdpCurriculumMS; User Id=sa; Password=CRDP@123; TrustServerCertificate=True;";
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer(Connection);
+        => optionsBuilder.UseSqlServer("Server=52.169.111.157; Database=CrdpCurriculumMS; User Id=sa; Password=CRDP@123; TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -86,6 +88,8 @@ public partial class CrdpCurriculumMsContext : DbContext
             entity.ToTable("CompetenciesClass");
 
             entity.Property(e => e.Cid).HasColumnName("CId");
+            entity.Property(e => e.DateCreated).HasColumnType("datetime");
+            entity.Property(e => e.DateModified).HasColumnType("datetime");
 
             entity.HasOne(d => d.CidNavigation).WithMany(p => p.CompetenciesClasses)
                 .HasForeignKey(d => d.Cid)
@@ -97,6 +101,8 @@ public partial class CrdpCurriculumMsContext : DbContext
             entity.ToTable("CompetenciesConceptField");
 
             entity.Property(e => e.Cid).HasColumnName("CId");
+            entity.Property(e => e.DateCreated).HasColumnType("datetime");
+            entity.Property(e => e.DateModified).HasColumnType("datetime");
 
             entity.HasOne(d => d.CidNavigation).WithMany(p => p.CompetenciesConceptFields)
                 .HasForeignKey(d => d.Cid)
@@ -108,6 +114,8 @@ public partial class CrdpCurriculumMsContext : DbContext
             entity.ToTable("CompetenciesConceptTree");
 
             entity.Property(e => e.Cid).HasColumnName("CId");
+            entity.Property(e => e.DateCreated).HasColumnType("datetime");
+            entity.Property(e => e.DateModified).HasColumnType("datetime");
 
             entity.HasOne(d => d.CidNavigation).WithMany(p => p.CompetenciesConceptTrees)
                 .HasForeignKey(d => d.Cid)
@@ -125,6 +133,8 @@ public partial class CrdpCurriculumMsContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.CompMainId).HasColumnName("CompMainID");
             entity.Property(e => e.CompSubId).HasColumnName("CompSubID");
+            entity.Property(e => e.DateCreated).HasColumnType("datetime");
+            entity.Property(e => e.DateModified).HasColumnType("datetime");
 
             entity.HasOne(d => d.CompMain).WithMany(p => p.CompetenciesCrossCompMains)
                 .HasForeignKey(d => d.CompMainId)
@@ -141,6 +151,8 @@ public partial class CrdpCurriculumMsContext : DbContext
             entity.ToTable("CompetenciesDomain");
 
             entity.Property(e => e.Cid).HasColumnName("CId");
+            entity.Property(e => e.DateCreated).HasColumnType("datetime");
+            entity.Property(e => e.DateModified).HasColumnType("datetime");
 
             entity.HasOne(d => d.CidNavigation).WithMany(p => p.CompetenciesDomains)
                 .HasForeignKey(d => d.Cid)
@@ -149,6 +161,8 @@ public partial class CrdpCurriculumMsContext : DbContext
 
         modelBuilder.Entity<CompetenciesStep>(entity =>
         {
+            entity.Property(e => e.DateCreated).HasColumnType("datetime");
+            entity.Property(e => e.DateModified).HasColumnType("datetime");
             entity.Property(e => e.Step).HasMaxLength(50);
             entity.Property(e => e.StepComment).HasMaxLength(500);
             entity.Property(e => e.StepDate).HasColumnType("datetime");
@@ -183,17 +197,55 @@ public partial class CrdpCurriculumMsContext : DbContext
 
             entity.Property(e => e.ConceptDetails).HasMaxLength(500);
             entity.Property(e => e.ConceptName).HasMaxLength(500);
+            entity.Property(e => e.DateCreated).HasColumnType("datetime");
+            entity.Property(e => e.DateModified).HasColumnType("datetime");
             entity.Property(e => e.IdNumber).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<ConceptTreeClass>(entity =>
+        {
+            entity.ToTable("ConceptTreeClass");
+
+            entity.Property(e => e.Ctid).HasColumnName("CTId");
+            entity.Property(e => e.DateCreated).HasColumnType("datetime");
+            entity.Property(e => e.DateModified).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Ct).WithMany(p => p.ConceptTreeClasses)
+                .HasForeignKey(d => d.Ctid)
+                .HasConstraintName("FK_ConceptTreeClass_ConceptTree");
+        });
+
+        modelBuilder.Entity<ConfigCycleClass>(entity =>
+        {
+            entity.ToTable("ConfigCycleClass");
+        });
+
+        modelBuilder.Entity<ConfigDomainField>(entity =>
+        {
+            entity.ToTable("ConfigDomainField");
         });
 
         modelBuilder.Entity<Role>(entity =>
         {
+            entity.Property(e => e.DateCreated)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.DateModified)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
             entity.Property(e => e.RoleDetails).HasMaxLength(500);
             entity.Property(e => e.RoleName).HasMaxLength(100);
         });
 
         modelBuilder.Entity<RoleService>(entity =>
         {
+            entity.Property(e => e.DateCreated)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.DateModified)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
             entity.HasOne(d => d.Role).WithMany(p => p.RoleServices)
                 .HasForeignKey(d => d.RoleId)
                 .HasConstraintName("FK_RoleServices_Roles");
@@ -205,7 +257,23 @@ public partial class CrdpCurriculumMsContext : DbContext
 
         modelBuilder.Entity<Service>(entity =>
         {
+            entity.Property(e => e.Clurl)
+                .HasMaxLength(100)
+                .HasColumnName("CLURL");
+            entity.Property(e => e.DateCreated)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.DateModified)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Dependencies).HasMaxLength(500);
+            entity.Property(e => e.HasChildren).HasColumnName("hasCHildren");
+            entity.Property(e => e.Parent).HasMaxLength(100);
             entity.Property(e => e.ServiceName).HasMaxLength(100);
+            entity.Property(e => e.Svurl)
+                .HasMaxLength(100)
+                .HasColumnName("SVURL");
+            entity.Property(e => e.Title).HasMaxLength(100);
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -221,7 +289,7 @@ public partial class CrdpCurriculumMsContext : DbContext
             entity.Property(e => e.Mname)
                 .HasMaxLength(50)
                 .HasColumnName("MName");
-            entity.Property(e => e.Password).HasMaxLength(50);
+            entity.Property(e => e.Password).HasMaxLength(250);
             entity.Property(e => e.PhoneNb).HasMaxLength(50);
             entity.Property(e => e.Username).HasMaxLength(50);
         });
