@@ -1,7 +1,65 @@
 {
   "Version": 1,
+<<<<<<< HEAD
+  "WorkspaceRootPath": "D:\\PR\\BackEnd\\BackEnd\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|d:\\pr\\backend\\backend\\backend\\controllers\\roleservicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|solutionrelative:backend\\controllers\\roleservicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|d:\\pr\\backend\\backend\\backend\\controllers\\servicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|solutionrelative:backend\\controllers\\servicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|d:\\pr\\backend\\backend\\backend\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|solutionrelative:backend\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|d:\\pr\\backend\\backend\\backend\\controllers\\userrolecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|solutionrelative:backend\\controllers\\userrolecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|d:\\pr\\backend\\backend\\backend\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|solutionrelative:backend\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|d:\\pr\\backend\\backend\\backend\\class\\rolemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|solutionrelative:backend\\class\\rolemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|d:\\pr\\backend\\backend\\backend\\models\\crdpcurriculummscontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|solutionrelative:backend\\models\\crdpcurriculummscontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|d:\\pr\\backend\\backend\\backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|solutionrelative:backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|d:\\pr\\backend\\backend\\backend\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|solutionrelative:backend\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|d:\\pr\\backend\\backend\\backend\\readme.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|solutionrelative:backend\\readme.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\PR\\BackEnd\\BackEnd\\BackEnd\\CrdpCurriculumMsContext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:BackEnd\\CrdpCurriculumMsContext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|d:\\pr\\backend\\backend\\backend\\backend.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|solutionrelative:backend\\backend.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|d:\\pr\\backend\\backend\\backend\\class\\infogrid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5524934C-A382-4463-930A-EAA6C3D8CB21}|BackEnd\\BackEnd.csproj|solutionrelative:backend\\class\\infogrid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+=======
   "WorkspaceRootPath": "D:\\Programs\\CRDPWebApplication\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\",
   "Documents": [],
+>>>>>>> 198689c915d44f7699126d6e0067deeac293572a
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +67,181 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
+<<<<<<< HEAD
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RoleServicesController.cs",
+              "DocumentMoniker": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\Controllers\\RoleServicesController.cs",
+              "RelativeDocumentMoniker": "BackEnd\\Controllers\\RoleServicesController.cs",
+              "ToolTip": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\Controllers\\RoleServicesController.cs",
+              "RelativeToolTip": "BackEnd\\Controllers\\RoleServicesController.cs",
+              "ViewState": "AQIAAJsAAAAAAAAAAAAjwKYAAAAUAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-28T06:59:41.224Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "BackEnd\\Controllers\\AccountController.cs",
+              "ToolTip": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "BackEnd\\Controllers\\AccountController.cs",
+              "ViewState": "AQIAAEEAAAAAAAAAAAAgwEoAAABLAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-14T16:35:47.859Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ServicesController.cs",
+              "DocumentMoniker": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\Controllers\\ServicesController.cs",
+              "RelativeDocumentMoniker": "BackEnd\\Controllers\\ServicesController.cs",
+              "ToolTip": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\Controllers\\ServicesController.cs",
+              "RelativeToolTip": "BackEnd\\Controllers\\ServicesController.cs",
+              "ViewState": "AQIAAJ4AAAAAAAAAAAAnwK0AAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-24T04:29:47.724Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UserRoleController.cs",
+              "DocumentMoniker": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\Controllers\\UserRoleController.cs",
+              "RelativeDocumentMoniker": "BackEnd\\Controllers\\UserRoleController.cs",
+              "ToolTip": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\Controllers\\UserRoleController.cs",
+              "RelativeToolTip": "BackEnd\\Controllers\\UserRoleController.cs",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAMwDUAAAAGAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-20T00:56:21.24Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "BackEnd\\appsettings.Development.json",
+              "ToolTip": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\appsettings.Development.json",
+              "RelativeToolTip": "BackEnd\\appsettings.Development.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-07-28T06:54:36.85Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\appsettings.json",
+              "RelativeDocumentMoniker": "BackEnd\\appsettings.json",
+              "ToolTip": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\appsettings.json",
+              "RelativeToolTip": "BackEnd\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAATAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-07-28T06:54:39.576Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "UsersController.cs",
+              "DocumentMoniker": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\Controllers\\UsersController.cs",
+              "RelativeDocumentMoniker": "BackEnd\\Controllers\\UsersController.cs",
+              "ToolTip": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\Controllers\\UsersController.cs",
+              "RelativeToolTip": "BackEnd\\Controllers\\UsersController.cs",
+              "ViewState": "AQIAAI0AAAAAAAAAAAAAwJoAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-19T15:31:26.438Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "RoleModel.cs",
+              "DocumentMoniker": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\Class\\RoleModel.cs",
+              "RelativeDocumentMoniker": "BackEnd\\Class\\RoleModel.cs",
+              "ToolTip": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\Class\\RoleModel.cs",
+              "RelativeToolTip": "BackEnd\\Class\\RoleModel.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAdAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-28T11:35:39.282Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "readme.txt",
+              "DocumentMoniker": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\readme.txt",
+              "RelativeDocumentMoniker": "BackEnd\\readme.txt",
+              "ToolTip": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\readme.txt",
+              "RelativeToolTip": "BackEnd\\readme.txt",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAADAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2024-07-28T06:52:29.691Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CrdpCurriculumMsContext.cs",
+              "DocumentMoniker": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\Models\\CrdpCurriculumMsContext.cs",
+              "RelativeDocumentMoniker": "BackEnd\\Models\\CrdpCurriculumMsContext.cs",
+              "ToolTip": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\Models\\CrdpCurriculumMsContext.cs",
+              "RelativeToolTip": "BackEnd\\Models\\CrdpCurriculumMsContext.cs",
+              "ViewState": "AQIAABEAAAAAAAAAAAA3wAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-28T06:57:42.072Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "CrdpCurriculumMsContext.cs",
+              "DocumentMoniker": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\CrdpCurriculumMsContext.cs",
+              "RelativeDocumentMoniker": "BackEnd\\CrdpCurriculumMsContext.cs",
+              "ToolTip": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\CrdpCurriculumMsContext.cs",
+              "RelativeToolTip": "BackEnd\\CrdpCurriculumMsContext.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-24T04:27:18.401Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "infoGrid.cs",
+              "DocumentMoniker": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\Class\\infoGrid.cs",
+              "RelativeDocumentMoniker": "BackEnd\\Class\\infoGrid.cs",
+              "ToolTip": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\Class\\infoGrid.cs",
+              "RelativeToolTip": "BackEnd\\Class\\infoGrid.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAZAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-14T16:47:19.459Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "BackEnd.csproj",
+              "DocumentMoniker": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\BackEnd.csproj",
+              "RelativeDocumentMoniker": "BackEnd\\BackEnd.csproj",
+              "ToolTip": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\BackEnd.csproj",
+              "RelativeToolTip": "BackEnd\\BackEnd.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-07-19T15:18:09.704Z"
+=======
           "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+>>>>>>> 198689c915d44f7699126d6e0067deeac293572a
             }
           ]
         }

@@ -19,7 +19,7 @@ public partial class CompetenciesCross
 
     public DateTime? DateModified { get; set; }
 
-    public virtual Competencies? CompMain { get; set; }
+    public virtual Competency? CompMain { get; set; }
 
-    public virtual Competencies IdNavigation { get; set; } = null!;
+    public virtual Competency IdNavigation { get; set; } = null!;
 }
