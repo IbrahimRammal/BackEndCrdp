@@ -1,4 +1,5 @@
-﻿using BackEnd.Models;
+﻿using BackEnd.Data;
+using BackEnd.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -254,5 +255,127 @@ namespace BackEnd.Controllers
         {
             return _context.ConfigCycleClasses.Any(e => e.Id == id);
         }
+
+
+        // GET: api/ConfigConceptTreeLevels
+        [HttpGet("GetConfigConceptTreeLevels")]
+        public async Task<ActionResult<IEnumerable<ConfigConceptTreeLevel>>> GetConfigConceptTreeLevels()
+        {
+            return await _context.ConfigConceptTreeLevels.ToListAsync();
+        }
+
+        // GET: api/ConfigConceptTreeLevels/5
+        [HttpGet("GetConfigConceptTreeLevelsyId/{id}")]
+        public async Task<IActionResult> GetConfigConceptTreeLevelsById(int id)
+        {
+            var ConfigConceptTreeLevel = await _context.ConfigConceptTreeLevels.FindAsync(id);
+            if (ConfigConceptTreeLevel == null)
+            {
+                return NotFound();
+            }
+            return Ok(ConfigConceptTreeLevel);
+        }
+
+        [HttpPut("UpdateConfigConceptTreeLevels")]
+        ////[Consumes("application/json")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public async Task<IActionResult> UpdateConfigConceptTreeLevels([FromForm] IFormCollection form)
+        {
+            try
+            {
+                var key = form["key"];
+                var values = form["values"];
+
+                // Convert the key to int before using it to find the entity
+                if (!int.TryParse(key, out int id))
+                {
+                    return BadRequest("Invalid key format.");
+                }
+
+                var ConfigConceptTreeLevel = await _context.ConfigConceptTreeLevels.FindAsync(id); // Use the converted int here
+
+                // Check if the code exists
+                if (ConfigConceptTreeLevel == null)
+                {
+                    return NotFound("Code not found.");
+                }
+
+                // Update code values
+                JsonConvert.PopulateObject(values, ConfigConceptTreeLevel);
+
+                // Save changes
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Code updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                // Return an error response in case of an exception
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+        // POST: api/ConfigConceptTreeLevels
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost("InsertConfigConceptTreeLevels")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public async Task<ActionResult<ConfigConceptTreeLevel>> InsertConfigConceptTreeLevels([FromForm] IFormCollection form)
+        {
+            var ConfigConceptTreeLevel = new ConfigConceptTreeLevel();
+            try
+            {
+                var key = form["key"];
+                var values = form["values"];
+
+                JsonConvert.PopulateObject(values, ConfigConceptTreeLevel);
+
+
+                _context.ConfigConceptTreeLevels.Add(ConfigConceptTreeLevel);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+
+            }
+
+
+            return CreatedAtAction("GetConfigConceptTreeLevels", new { id = ConfigConceptTreeLevel.Id }, ConfigConceptTreeLevel);
+        }
+
+        // DELETE: api/ConfigConceptTreeLevels/5
+        [HttpDelete("DeleteConfigConceptTreeLevels")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public async Task<IActionResult> DeleteConfigConceptTreeLevels([FromForm] IFormCollection form)
+        {
+            var key = form["key"];
+
+            // Convert the key to int before using it to find the entity
+            if (!int.TryParse(key, out int id))
+            {
+                return BadRequest("Invalid key format.");
+            }
+
+            var ConfigConceptTreeLevel = await _context.ConfigConceptTreeLevels.FindAsync(id); // Use the converted int here
+
+            if (ConfigConceptTreeLevel == null)
+            {
+                return NotFound();
+            }
+
+            _context.ConfigConceptTreeLevels.Remove(ConfigConceptTreeLevel);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool ConfigConceptTreeLevelExists(int id)
+        {
+            return _context.ConfigConceptTreeLevels.Any(e => e.Id == id);
+        }
+
+
+
+
     }
 }

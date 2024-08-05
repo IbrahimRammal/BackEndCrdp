@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using BackEnd.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackEnd.Models;
+namespace BackEnd.Data;
 
 public partial class CrdpCurriculumMsContext : DbContext
 {
@@ -38,6 +39,8 @@ public partial class CrdpCurriculumMsContext : DbContext
     public virtual DbSet<ConceptTree> ConceptTrees { get; set; }
 
     public virtual DbSet<ConceptTreeClass> ConceptTreeClasses { get; set; }
+
+    public virtual DbSet<ConfigConceptTreeLevel> ConfigConceptTreeLevels { get; set; }
 
     public virtual DbSet<ConfigCycleClass> ConfigCycleClasses { get; set; }
 
@@ -213,6 +216,11 @@ public partial class CrdpCurriculumMsContext : DbContext
             entity.HasOne(d => d.Ct).WithMany(p => p.ConceptTreeClasses)
                 .HasForeignKey(d => d.Ctid)
                 .HasConstraintName("FK_ConceptTreeClass_ConceptTree");
+        });
+
+        modelBuilder.Entity<ConfigConceptTreeLevel>(entity =>
+        {
+            entity.ToTable("ConfigConceptTreeLevel");
         });
 
         modelBuilder.Entity<ConfigCycleClass>(entity =>

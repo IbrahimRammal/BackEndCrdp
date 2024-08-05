@@ -1,4 +1,5 @@
-﻿using BackEnd.Models;
+﻿using BackEnd.Data;
+using BackEnd.Models;
 using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -137,7 +138,7 @@ namespace BackEnd.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("InsertCodesContents")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<ActionResult<CodesContent>> PostCodesContents([FromForm] IFormCollection form)
+        public async Task<ActionResult<CodesContent>> InsertCodesContents([FromForm] IFormCollection form)
         {
             var codeContents = new CodesContent();
             try
@@ -151,14 +152,14 @@ namespace BackEnd.Controllers
                 _context.CodesContents.Add(codeContents);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                return StatusCode(500, new { success = false, message = ex.Message });
 
             }
 
 
-            return CreatedAtAction("GetCodes", new { id = codeContents.Id }, codeContents);
+            return CreatedAtAction("GetCodesContents", new { id = codeContents.Id }, codeContents);
         }
 
         // DELETE: api/CodesContents/5
