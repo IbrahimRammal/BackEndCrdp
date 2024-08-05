@@ -277,7 +277,7 @@ namespace BackEnd.Controllers
         }
 
         // GET: api/GetConfigConceptTreeLevelsNextlevelById/5
-        [HttpGet("GetConfigNextlevelByConceptTreeLevels/{id}")]
+        [HttpGet("GetConfigNextlevelByConceptTreeLevel/{id}")]
         public async Task<IActionResult> GetConfigConceptTreeLevelsNextlevelById(int id)
         {
             var ConfigConceptTreeLevel = await _context.ConfigConceptTreeLevels.FirstOrDefaultAsync(e => e.ConceptTreeLevel == id);
