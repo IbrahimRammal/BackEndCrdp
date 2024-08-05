@@ -25,5 +25,15 @@ public partial class ConceptTree
 
     public int? ConceptLevel { get; set; }
 
+    public int? UserCreated { get; set; }
+
+    public DateTime? DateCreated { get; set; }
+
+    public int? UserModified { get; set; }
+
+    public DateTime? DateModified { get; set; }
+
     public virtual ICollection<CompetenciesConceptTree> CompetenciesConceptTrees { get; set; } = new List<CompetenciesConceptTree>();
+
+    public virtual ICollection<ConceptTreeClass> ConceptTreeClasses { get; set; } = new List<ConceptTreeClass>();
 }

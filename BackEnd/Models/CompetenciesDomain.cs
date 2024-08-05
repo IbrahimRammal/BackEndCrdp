@@ -11,5 +11,13 @@ public partial class CompetenciesDomain
 
     public int? DomainId { get; set; }
 
+    public int? UserCreated { get; set; }
+
+    public DateTime? DateCreated { get; set; }
+
+    public int? UserModified { get; set; }
+
+    public DateTime? DateModified { get; set; }
+
     public virtual Competency? CidNavigation { get; set; }
 }

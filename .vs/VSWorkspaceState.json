@@ -1,0 +1,10 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\.github\\workflows",
+    "\\BackEnd",
+    "\\BackEnd\\Models"
+  ],
+  "SelectedNode": "\\BackEnd\\Models\\Service.cs",
+  "PreviewInSolutionExplorer": false
+}
