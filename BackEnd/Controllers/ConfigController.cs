@@ -276,6 +276,18 @@ namespace BackEnd.Controllers
             return Ok(ConfigConceptTreeLevel);
         }
 
+        // GET: api/GetConfigConceptTreeLevelsNextlevelById/5
+        [HttpGet("GetConfigNextlevelByConceptTreeLevels/{id}")]
+        public async Task<IActionResult> GetConfigConceptTreeLevelsNextlevelById(int id)
+        {
+            var ConfigConceptTreeLevel = await _context.ConfigConceptTreeLevels.FirstOrDefaultAsync(e => e.ConceptTreeLevel == id);
+            if (ConfigConceptTreeLevel == null)
+            {
+                return NotFound();
+            }
+            return Ok(ConfigConceptTreeLevel);
+        }
+
         [HttpPut("UpdateConfigConceptTreeLevels")]
         ////[Consumes("application/json")]
         [Consumes("application/x-www-form-urlencoded")]
@@ -375,7 +387,17 @@ namespace BackEnd.Controllers
         }
 
 
-
+        // GET: api/GetConfigConceptTreeLevelsNextlevelById/5
+        [HttpGet("GetConceptTreeClassByConceptId/{id}")]
+        public async Task<IActionResult> GetConceptTreeClassByConceptId(int id)
+        {
+            var ConfigConceptTreeLevel = await _context.ConceptTreeClasses.FirstOrDefaultAsync(e => e.Ctid == id);
+            if (ConfigConceptTreeLevel == null)
+            {
+                return NotFound();
+            }
+            return Ok(ConfigConceptTreeLevel);
+        }
 
     }
 }
