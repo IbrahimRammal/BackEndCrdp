@@ -11,7 +11,15 @@ public partial class CompetenciesConceptTree
 
     public int? ConceptTreeId { get; set; }
 
-    public virtual Competency? CidNavigation { get; set; }
+    public int? UserCreated { get; set; }
+
+    public DateTime? DateCreated { get; set; }
+
+    public int? UserModified { get; set; }
+
+    public DateTime? DateModified { get; set; }
+
+    public virtual Competencies? CidNavigation { get; set; }
 
     public virtual ConceptTree? ConceptTree { get; set; }
 }

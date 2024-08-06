@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BackEnd.Models;
 
-public partial class Competency
+public partial class Competencies
 {
     public int Id { get; set; }
 

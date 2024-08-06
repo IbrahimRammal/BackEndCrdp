@@ -17,6 +17,14 @@ public partial class RoleService
 
     public bool? CanDelete { get; set; }
 
+    public DateTime? DateModified { get; set; }
+
+    public int? UserModified { get; set; }
+
+    public DateTime? DateCreated { get; set; }
+
+    public int? UserCreated { get; set; }
+
     public virtual Role? Role { get; set; }
 
     public virtual Service? Service { get; set; }

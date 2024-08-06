@@ -23,5 +23,13 @@ public partial class Service
 
     public int? ParentId { get; set; }
 
+    public DateTime? DateModified { get; set; }
+
+    public int? UserModified { get; set; }
+
+    public DateTime? DateCreated { get; set; }
+
+    public int? UserCreated { get; set; }
+
     public virtual ICollection<RoleService> RoleServices { get; set; } = new List<RoleService>();
 }
