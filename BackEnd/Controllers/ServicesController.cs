@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BackEnd.Models;
 using Newtonsoft.Json;
+using BackEnd.Data;
 
 namespace BackEnd.Controllers
 {

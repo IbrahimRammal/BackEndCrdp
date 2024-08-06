@@ -27,5 +27,5 @@ public partial class CompetenciesStep
 
     public DateTime? DateModified { get; set; }
 
-    public virtual Competency? CidNavigation { get; set; }
+    public virtual Competencies? CidNavigation { get; set; }
 }

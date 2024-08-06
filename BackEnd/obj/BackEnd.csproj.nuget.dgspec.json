@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Programs\\CRDPWebApplication\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\BackEnd.csproj": {}
+    "C:\\Users\\user\\Source\\Repos\\BackEndCrdp\\BackEnd\\BackEnd.csproj": {}
   },
   "projects": {
-    "D:\\Programs\\CRDPWebApplication\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\BackEnd.csproj": {
+    "C:\\Users\\user\\Source\\Repos\\BackEndCrdp\\BackEnd\\BackEnd.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Programs\\CRDPWebApplication\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\BackEnd.csproj",
+        "projectUniqueName": "C:\\Users\\user\\Source\\Repos\\BackEndCrdp\\BackEnd\\BackEnd.csproj",
         "projectName": "BackEnd",
-        "projectPath": "D:\\Programs\\CRDPWebApplication\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\BackEnd.csproj",
+        "projectPath": "C:\\Users\\user\\Source\\Repos\\BackEndCrdp\\BackEnd\\BackEnd.csproj",
         "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "D:\\Programs\\CRDPWebApplication\\BackEndCrdp-master\\BackEndCrdp-master\\BackEndCrdp\\BackEnd\\obj\\",
+        "outputPath": "C:\\Users\\user\\Source\\Repos\\BackEndCrdp\\BackEnd\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\DevExpress 22.2\\Components\\Offline Packages",
