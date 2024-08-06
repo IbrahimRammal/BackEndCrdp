@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using BackEnd.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace BackEnd.Models;
+namespace BackEnd.Data;
 
 public partial class CrdpCurriculumMsContext : DbContext
 {
@@ -33,11 +34,13 @@ public partial class CrdpCurriculumMsContext : DbContext
 
     public virtual DbSet<CompetenciesVersion> CompetenciesVersions { get; set; }
 
-    public virtual DbSet<Competency> Competencies { get; set; }
+    public virtual DbSet<Competencies> Competencies { get; set; }
 
     public virtual DbSet<ConceptTree> ConceptTrees { get; set; }
 
     public virtual DbSet<ConceptTreeClass> ConceptTreeClasses { get; set; }
+
+    public virtual DbSet<ConfigConceptTreeLevel> ConfigConceptTreeLevels { get; set; }
 
     public virtual DbSet<ConfigCycleClass> ConfigCycleClasses { get; set; }
 
@@ -182,7 +185,7 @@ public partial class CrdpCurriculumMsContext : DbContext
             entity.Property(e => e.VersionDateCreated).HasColumnType("datetime");
         });
 
-        modelBuilder.Entity<Competency>(entity =>
+        modelBuilder.Entity<Competencies>(entity =>
         {
             entity.Property(e => e.CompetenceDetails).HasMaxLength(500);
             entity.Property(e => e.CompetenceName).HasMaxLength(500);
@@ -215,18 +218,19 @@ public partial class CrdpCurriculumMsContext : DbContext
                 .HasConstraintName("FK_ConceptTreeClass_ConceptTree");
         });
 
+        modelBuilder.Entity<ConfigConceptTreeLevel>(entity =>
+        {
+            entity.ToTable("ConfigConceptTreeLevel");
+        });
+
         modelBuilder.Entity<ConfigCycleClass>(entity =>
         {
             entity.ToTable("ConfigCycleClass");
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<ConfigDomainField>(entity =>
         {
             entity.ToTable("ConfigDomainField");
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<Role>(entity =>
