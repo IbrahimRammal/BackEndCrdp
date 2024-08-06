@@ -35,3 +35,7 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+BackEnd/obj/Debug/net8.0/BackEnd.AssemblyInfo.cs
+/BackEnd/obj
+/BackEnd/obj/Debug/net8.0
+.vs/BackEnd/DesignTimeBuild/.dtbcache.v2
