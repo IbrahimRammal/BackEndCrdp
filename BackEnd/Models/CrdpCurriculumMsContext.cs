@@ -166,8 +166,8 @@ public partial class CrdpCurriculumMsContext : DbContext
 
         modelBuilder.Entity<Competency>(entity =>
         {
-            entity.Property(e => e.CompetencyDetails).HasMaxLength(500);
-            entity.Property(e => e.CompetencyName).HasMaxLength(500);
+            entity.Property(e => e.CompetenceDetails).HasMaxLength(500);
+            entity.Property(e => e.CompetenceName).HasMaxLength(500);
             entity.Property(e => e.DateCreated).HasColumnType("datetime");
             entity.Property(e => e.DateModified).HasColumnType("datetime");
             entity.Property(e => e.IdNumber).HasMaxLength(50);
@@ -201,7 +201,17 @@ public partial class CrdpCurriculumMsContext : DbContext
 
         modelBuilder.Entity<Service>(entity =>
         {
+            entity.Property(e => e.Clurl)
+                .HasMaxLength(100)
+                .HasColumnName("CLURL");
+            entity.Property(e => e.Dependencies).HasMaxLength(500);
+            entity.Property(e => e.HasChildren).HasColumnName("hasCHildren");
+            entity.Property(e => e.Parent).HasMaxLength(100);
             entity.Property(e => e.ServiceName).HasMaxLength(100);
+            entity.Property(e => e.Svurl)
+                .HasMaxLength(100)
+                .HasColumnName("SVURL");
+            entity.Property(e => e.Title).HasMaxLength(100);
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -217,7 +227,7 @@ public partial class CrdpCurriculumMsContext : DbContext
             entity.Property(e => e.Mname)
                 .HasMaxLength(50)
                 .HasColumnName("MName");
-            entity.Property(e => e.Password).HasMaxLength(50);
+            entity.Property(e => e.Password).HasMaxLength(250);
             entity.Property(e => e.PhoneNb).HasMaxLength(50);
             entity.Property(e => e.Username).HasMaxLength(50);
         });

@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\BackEnd.csproj": {}
+    "F:\\PR Education\\BackEndCrdp\\BackEnd\\BackEnd\\BackEnd.csproj": {}
   },
   "projects": {
-    "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\BackEnd.csproj": {
+    "F:\\PR Education\\BackEndCrdp\\BackEnd\\BackEnd\\BackEnd.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\BackEnd.csproj",
+        "projectUniqueName": "F:\\PR Education\\BackEndCrdp\\BackEnd\\BackEnd\\BackEnd.csproj",
         "projectName": "BackEnd",
-        "projectPath": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\BackEnd.csproj",
-        "packagesPath": "C:\\Users\\LenovoThink\\.nuget\\packages\\",
-        "outputPath": "D:\\PR\\BackEnd\\BackEnd\\BackEnd\\obj\\",
+        "projectPath": "F:\\PR Education\\BackEndCrdp\\BackEnd\\BackEnd\\BackEnd.csproj",
+        "packagesPath": "C:\\Users\\Russia\\.nuget\\packages\\",
+        "outputPath": "F:\\PR Education\\BackEndCrdp\\BackEnd\\BackEnd\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\LenovoThink\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Russia\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
