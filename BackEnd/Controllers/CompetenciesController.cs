@@ -27,6 +27,55 @@ namespace BackEnd.Controllers
 
         }
 
+        [HttpGet("count-by-type")]
+        public async Task<ActionResult<List<CompetenceTypeCountDto>>> GetCompetenciesCountByType()
+        {
+            try
+            {
+                // Fetch all level codes
+                var levelCodes = await _context.CodesContents
+                    .Where(c => c.CodeId == 5) // Adjust this if needed
+                    .ToDictionaryAsync(c => c.Id, c => c.CodeContentName); // Create a dictionary for easy lookup
+                                                                           // Group by CompetenceType
+
+                var competenceTypeCodes = await _context.CodesContents
+                    .Where(c => c.CodeId == 9) // Fetch competence type names
+                    .ToDictionaryAsync(c => c.Id, c => c.CodeContentName); // Dictionary for easy lookup
+
+                var counts = await _context.Competencies
+                    .GroupBy(c => c.CompetenceType)
+                    .Select(g => new CompetenceTypeCountDto
+                    {
+                        CompetenceType = g.Key ?? 0,
+                        CompetenceTypeName = competenceTypeCodes.GetValueOrDefault(g.Key ?? 0), // CompetenceType name
+                        Count = g.Count(),
+                        Levels = g.GroupBy(c => c.CompetenceLevel)
+                                  .Select(lg => new CompetenceLevelDto
+                                  {
+                                      CompetenceLevelId = lg.Key ?? 0,
+                                      CompetenceLevelName = levelCodes.GetValueOrDefault(lg.Key ?? 0), // Lookup name
+                                      Count = lg.Count(),
+                                      Competencies = lg.Select(c => new CompetenciesDto
+                                      {
+                                          Id = c.Id,
+                                          CompetenceName = c.CompetenceName,
+                                          CompetenceDetails = c.CompetenceDetails
+                                          // Map other fields as necessary
+                                      }).ToList()
+                                  }).ToList()
+                    })
+                    .ToListAsync();
+
+                return Ok(counts);
+            }
+            catch (Exception ex)
+            {
+                // Log exception for debugging
+                Console.WriteLine($"Exception: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
         // GET: api/Competencies
         [HttpGet("GetCompetencies")]
         public async Task<ActionResult<IEnumerable<Competencies>>> GetCompetencies()
@@ -198,31 +247,31 @@ namespace BackEnd.Controllers
             }
         }
 
-        // By kamel Nazar
-        [HttpGet("count-by-type")]
-        public async Task<ActionResult<List<CompetenceTypeCountDto>>> GetCompetenciesCountByType()
-        {
-            try
-            {
-                // Group by CompetenceType and count each group
-                var counts = await _context.Competencies
-                    .GroupBy(c => c.CompetenceType)
-                    .Select(g => new CompetenceTypeCountDto
-                    {
-                        CompetenceType = g.Key ?? 0,  // Handle null CompetenceType
-                        Count = g.Count()
-                    })
-                    .ToListAsync();
+        //// By kamel Nazar
+        //[HttpGet("count-by-type")]
+        //public async Task<ActionResult<List<CompetenceTypeCountDto>>> GetCompetenciesCountByType()
+        //{
+        //    try
+        //    {
+        //        // Group by CompetenceType and count each group
+        //        var counts = await _context.Competencies
+        //            .GroupBy(c => c.CompetenceType)
+        //            .Select(g => new CompetenceTypeCountDto
+        //            {
+        //                CompetenceType = g.Key ?? 0,  // Handle null CompetenceType
+        //                Count = g.Count()
+        //            })
+        //            .ToListAsync();
 
-                return Ok(counts);
-            }
-            catch (Exception ex)
-            {
-                // Log exception for debugging
-                Console.WriteLine($"Exception: {ex.Message}");
-                return StatusCode(500, "Internal server error");
-            }
-        }
+        //        return Ok(counts);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log exception for debugging
+        //        Console.WriteLine($"Exception: {ex.Message}");
+        //        return StatusCode(500, "Internal server error");
+        //    }
+        //}
 
         [HttpPost("AddCompetences")]
         public IActionResult AddCompetences(CompetenciesInfo competenciesInfo)
