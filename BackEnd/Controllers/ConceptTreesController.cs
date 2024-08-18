@@ -1,4 +1,5 @@
-﻿using BackEnd.Data;
+﻿using BackEnd.Class;
+using BackEnd.Data;
 using BackEnd.Models;
 using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Identity;
@@ -87,9 +88,9 @@ namespace BackEnd.Controllers
                 // Return an error response in case of an exception
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
-       
+
         }
-     
+
 
         // POST: api/ConceptTrees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -105,7 +106,7 @@ namespace BackEnd.Controllers
 
                 JsonConvert.PopulateObject(values, ConceptTrees);
 
-          
+
                 _context.ConceptTrees.Add(ConceptTrees);
                 await _context.SaveChangesAsync();
 
@@ -240,6 +241,32 @@ namespace BackEnd.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
+        [HttpGet("ConceptCountByLevel")]
+        public async Task<ActionResult<IEnumerable<ConceptLevelCountDto>>> GetConceptCountByLevel()
+        {
+            // Perform a join between ConceptTrees and CodesContents to get the level name
+            var result = await _context.ConceptTrees
+                .Join(_context.CodesContents,
+                    concept => concept.ConceptLevel,   // Join on ConceptLevel
+                    code => code.Id,                  // Join on Id in CodesContents
+                    (concept, code) => new
+                    {
+                        code.CodeContentName,
+                        concept.ConceptLevel
+                    })
+                .GroupBy(x => new { x.ConceptLevel, x.CodeContentName })
+                .Select(g => new ConceptLevelCountDto
+                {
+                    LevelName = g.Key.CodeContentName, // Use the level name from the join
+                    Count = g.Count()
+                })
+                .ToListAsync();
+
+            return Ok(result);
+        }
+
+
 
     }
 }

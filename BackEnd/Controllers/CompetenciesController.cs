@@ -27,6 +27,8 @@ namespace BackEnd.Controllers
 
         }
 
+
+        // By kamel Nazar
         [HttpGet("count-by-type")]
         public async Task<ActionResult<List<CompetenceTypeCountDto>>> GetCompetenciesCountByType()
         {
@@ -247,31 +249,48 @@ namespace BackEnd.Controllers
             }
         }
 
-        //// By kamel Nazar
-        //[HttpGet("count-by-type")]
-        //public async Task<ActionResult<List<CompetenceTypeCountDto>>> GetCompetenciesCountByType()
-        //{
-        //    try
-        //    {
-        //        // Group by CompetenceType and count each group
-        //        var counts = await _context.Competencies
-        //            .GroupBy(c => c.CompetenceType)
-        //            .Select(g => new CompetenceTypeCountDto
-        //            {
-        //                CompetenceType = g.Key ?? 0,  // Handle null CompetenceType
-        //                Count = g.Count()
-        //            })
-        //            .ToListAsync();
+        [HttpGet("count-by-level-last-7-days")]
+        public async Task<ActionResult<List<CompetenceLevelDto>>> GetCompetenciesCountByLevelLast7Days()
+        {
+            try
+            {
+                // Get the current date and the date 7 days ago
+                var today = DateTime.UtcNow.Date;
+                var last7Days = today.AddDays(-7);
 
-        //        return Ok(counts);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Log exception for debugging
-        //        Console.WriteLine($"Exception: {ex.Message}");
-        //        return StatusCode(500, "Internal server error");
-        //    }
-        //}
+                // Fetch all level codes
+                var levelCodes = await _context.CodesContents
+                    .Where(c => c.CodeId == 5) // Adjust this if needed
+                    .ToDictionaryAsync(c => c.Id, c => c.CodeContentName); // Create a dictionary for easy lookup
+
+                // Filter competencies added in the last 7 days and group by CompetenceLevel
+                var levels = await _context.Competencies
+                    .Where(c => c.DateCreated.HasValue && c.DateCreated.Value >= last7Days && c.DateCreated.Value <= today) // Filter by date with nullable handling
+                    .GroupBy(c => c.CompetenceLevel)
+                    .Select(g => new CompetenceLevelDto
+                    {
+                        CompetenceLevelId = g.Key ?? 0,
+                        CompetenceLevelName = levelCodes.GetValueOrDefault(g.Key ?? 0), // Lookup level name
+                        Count = g.Count(),
+                        DailyCounts = g.GroupBy(c => c.DateCreated.Value.Date) // Use Value property to access Date part
+                                       .Select(dc => new DailyCountDto
+                                       {
+                                           Date = dc.Key,
+                                           Count = dc.Count()
+                                       }).ToList() // Group by date and count
+                    })
+                    .ToListAsync();
+
+                return Ok(levels);
+            }
+            catch (Exception ex)
+            {
+                // Log exception for debugging
+                Console.WriteLine($"Exception: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
 
         [HttpPost("AddCompetences")]
         public IActionResult AddCompetences(CompetenciesInfo competenciesInfo)

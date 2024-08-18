@@ -6,6 +6,7 @@
         public string? CompetenceLevelName { get; set; } // New property for level name
         public int Count { get; set; }
         public List<CompetenciesDto> Competencies { get; set; } = new List<CompetenciesDto>();
+        public List<DailyCountDto> DailyCounts { get; set; } = new List<DailyCountDto>(); // Add this property
 
     }
 }
