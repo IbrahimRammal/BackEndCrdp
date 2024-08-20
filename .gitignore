@@ -38,3 +38,4 @@ msbuild.wrn
 .vs/
 BackEnd/appsettings.json
 BackEnd/BackEnd.http
+BackEnd/Properties/launchSettings.json
