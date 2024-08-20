@@ -27,21 +27,22 @@ namespace BackEnd.Controllers
 
         }
 
-
-        // By kamel Nazar
         [HttpGet("count-by-type")]
         public async Task<ActionResult<List<CompetenceTypeCountDto>>> GetCompetenciesCountByType()
         {
             try
             {
+                var today = DateTime.UtcNow.Date;
+                var last7Days = today.AddDays(-7);
+
                 // Fetch all level codes
                 var levelCodes = await _context.CodesContents
                     .Where(c => c.CodeId == 5) // Adjust this if needed
                     .ToDictionaryAsync(c => c.Id, c => c.CodeContentName); // Create a dictionary for easy lookup
-                                                                           // Group by CompetenceType
 
+                // Fetch competence type names
                 var competenceTypeCodes = await _context.CodesContents
-                    .Where(c => c.CodeId == 9) // Fetch competence type names
+                    .Where(c => c.CodeId == 9) // Adjust this if needed
                     .ToDictionaryAsync(c => c.Id, c => c.CodeContentName); // Dictionary for easy lookup
 
                 var counts = await _context.Competencies
@@ -57,6 +58,13 @@ namespace BackEnd.Controllers
                                       CompetenceLevelId = lg.Key ?? 0,
                                       CompetenceLevelName = levelCodes.GetValueOrDefault(lg.Key ?? 0), // Lookup name
                                       Count = lg.Count(),
+                                      DailyCounts = lg.Where(c => c.DateCreated.HasValue && c.DateCreated.Value >= last7Days && c.DateCreated.Value <= today)
+                                                      .GroupBy(c => c.DateCreated.Value.Date)
+                                                      .Select(dc => new DailyCountDto
+                                                      {
+                                                          Date = dc.Key,
+                                                          Count = dc.Count()
+                                                      }).ToList(),
                                       Competencies = lg.Select(c => new CompetenciesDto
                                       {
                                           Id = c.Id,

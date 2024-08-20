@@ -23,7 +23,7 @@ public partial class Competencies
 
     public int? UserCreated { get; set; }
 
-    public DateTime? DateCreated { get; set; }
+    public DateTime? DateCreated { get; set; } = DateTime.Now;
 
     public int? UserModified { get; set; }
 

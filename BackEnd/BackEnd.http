@@ -1,4 +1,4 @@
-@BackEnd_HostAddress = https://localhost:5104
+@BackEnd_HostAddress = https://0.0.0.0:5104
 
 GET {{BackEnd_HostAddress}}/weatherforecast/
 Accept: application/json
