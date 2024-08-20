@@ -1,1 +1,0 @@
-﻿Scaffold-DbContext "Server=52.169.111.157; Database=CrdpCurriculumMS; User Id=sa; Password=CRDP@123; TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -f 
