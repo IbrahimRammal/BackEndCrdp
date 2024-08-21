@@ -86,6 +86,188 @@ namespace BackEnd.Controllers
             }
         }
 
+        [HttpGet("count-by-type-Last-30-times")]
+        public async Task<ActionResult<List<CompetenceTypeCountDto>>> GetCompetenciesCountByTypeLast30Days()
+        {
+            try
+            {
+                // Fetch all level codes
+                var levelCodes = await _context.CodesContents
+                    .Where(c => c.CodeId == 5)
+                    .ToDictionaryAsync(c => c.Id, c => c.CodeContentName);
+
+                // Fetch competence type names
+                var competenceTypeCodes = await _context.CodesContents
+                    .Where(c => c.CodeId == 9)
+                    .ToDictionaryAsync(c => c.Id, c => c.CodeContentName);
+
+                // Fetch the last 30 distinct dates when competencies were inserted
+                var last30Periods = await _context.Competencies
+                    .Where(c => c.DateCreated.HasValue)
+                    .OrderByDescending(c => c.DateCreated.Value.Date)
+                    .Select(c => c.DateCreated.Value.Date)
+                    .Distinct()
+                    .Take(30)
+                    .ToListAsync();
+
+                if (last30Periods.Count == 0)
+                {
+                    return Ok(new List<CompetenceTypeCountDto>());
+                }
+
+                // Fetch the counts grouped by competence type, level, and date
+                var groupedData = await _context.Competencies
+                    .Where(c => c.DateCreated.HasValue && last30Periods.Contains(c.DateCreated.Value.Date))
+                    .GroupBy(c => new { c.CompetenceType, c.CompetenceLevel, Date = c.DateCreated.Value.Date })
+                    .Select(g => new
+                    {
+                        g.Key.CompetenceType,
+                        g.Key.CompetenceLevel,
+                        g.Key.Date,
+                        Count = g.Count()
+                    })
+                    .ToListAsync();
+
+                // Prepare the response data
+                var counts = groupedData
+                    .GroupBy(g => g.CompetenceType)
+                    .Select(g => new CompetenceTypeCountDto
+                    {
+                        CompetenceType = g.Key ?? 0,
+                        CompetenceTypeName = competenceTypeCodes.GetValueOrDefault(g.Key ?? 0),
+                        Count = g.Sum(x => x.Count),
+                        Levels = g.GroupBy(lg => lg.CompetenceLevel)
+                                  .Select(lg => new CompetenceLevelDto
+                                  {
+                                      CompetenceLevelId = lg.Key ?? 0,
+                                      CompetenceLevelName = levelCodes.GetValueOrDefault(lg.Key ?? 0),
+                                      Count = lg.Sum(x => x.Count),
+                                      DailyCounts = last30Periods.Select(period => new DailyCountDto
+                                      {
+                                          Date = period,
+                                          Count = lg.Where(x => x.Date == period).Sum(x => x.Count)
+                                      }).ToList(),
+                                      Competencies = lg.Select(c => new CompetenciesDto
+                                      {
+                                          Id = c.CompetenceLevel ?? 0, // Use the appropriate ID
+                                          CompetenceName = levelCodes.GetValueOrDefault(c.CompetenceLevel ?? 0), // Use the appropriate name
+                                          CompetenceDetails = "" // Map other fields as necessary
+                                                                 // Map other fields as necessary
+                                      }).ToList()
+                                  }).ToList()
+                    })
+                    .ToList();
+
+                return Ok(counts);
+            }
+            catch (Exception ex)
+            {
+                // Log exception for debugging
+                Console.WriteLine($"Exception: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                }
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+
+
+
+        [HttpGet("count-by-type-between-dates")]
+        public async Task<ActionResult<List<CompetenceTypeCountDto>>> GetCompetenciesCountByTypeBetweenDates(DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                // Fetch all level codes
+                var levelCodes = await _context.CodesContents
+                    .Where(c => c.CodeId == 5)
+                    .ToDictionaryAsync(c => c.Id, c => c.CodeContentName);
+
+                // Fetch competence type names
+                var competenceTypeCodes = await _context.CodesContents
+                    .Where(c => c.CodeId == 9)
+                    .ToDictionaryAsync(c => c.Id, c => c.CodeContentName);
+
+                // Validate the date range
+                if (endDate < startDate)
+                {
+                    return BadRequest("End date must be greater than or equal to start date.");
+                }
+
+                // Fetch the distinct dates within the specified range when competencies were inserted
+                var dateRange = await _context.Competencies
+                    .Where(c => c.DateCreated.HasValue && c.DateCreated.Value.Date >= startDate.Date && c.DateCreated.Value.Date <= endDate.Date)
+                    .OrderByDescending(c => c.DateCreated.Value.Date)
+                    .Select(c => c.DateCreated.Value.Date)
+                    .Distinct()
+                    .ToListAsync();
+
+                if (dateRange.Count == 0)
+                {
+                    return Ok(new List<CompetenceTypeCountDto>());
+                }
+
+                // Fetch the counts grouped by competence type, level, and date within the specified range
+                var groupedData = await _context.Competencies
+                    .Where(c => c.DateCreated.HasValue && dateRange.Contains(c.DateCreated.Value.Date))
+                    .GroupBy(c => new { c.CompetenceType, c.CompetenceLevel, Date = c.DateCreated.Value.Date })
+                    .Select(g => new
+                    {
+                        g.Key.CompetenceType,
+                        g.Key.CompetenceLevel,
+                        g.Key.Date,
+                        Count = g.Count()
+                    })
+                    .ToListAsync();
+
+                // Prepare the response data
+                var counts = groupedData
+                    .GroupBy(g => g.CompetenceType)
+                    .Select(g => new CompetenceTypeCountDto
+                    {
+                        CompetenceType = g.Key ?? 0,
+                        CompetenceTypeName = competenceTypeCodes.GetValueOrDefault(g.Key ?? 0),
+                        Count = g.Sum(x => x.Count),
+                        Levels = g.GroupBy(lg => lg.CompetenceLevel)
+                                  .Select(lg => new CompetenceLevelDto
+                                  {
+                                      CompetenceLevelId = lg.Key ?? 0,
+                                      CompetenceLevelName = levelCodes.GetValueOrDefault(lg.Key ?? 0),
+                                      Count = lg.Sum(x => x.Count),
+                                      DailyCounts = dateRange.Select(period => new DailyCountDto
+                                      {
+                                          Date = period,
+                                          Count = lg.Where(x => x.Date == period).Sum(x => x.Count)
+                                      }).ToList(),
+                                      Competencies = lg.Select(c => new CompetenciesDto
+                                      {
+                                          Id = c.CompetenceLevel ?? 0, // Use the appropriate ID
+                                          CompetenceName = levelCodes.GetValueOrDefault(c.CompetenceLevel ?? 0), // Use the appropriate name
+                                          CompetenceDetails = "" // Map other fields as necessary
+                                                                 // Map other fields as necessary
+                                      }).ToList()
+                                  }).ToList()
+                    })
+                    .ToList();
+
+                return Ok(counts);
+            }
+            catch (Exception ex)
+            {
+                // Log exception for debugging
+                Console.WriteLine($"Exception: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                }
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+
+
         // GET: api/Competencies
         [HttpGet("GetCompetencies")]
         public async Task<ActionResult<IEnumerable<Competencies>>> GetCompetencies()
