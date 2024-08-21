@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BackEnd.Models;
 
-public partial class VcompetenciesCascade
+public partial class VcompetenciesCascadeClass
 {
     public int Id1 { get; set; }
 
@@ -28,6 +28,12 @@ public partial class VcompetenciesCascade
     public string? CompetenceName3 { get; set; }
 
     public int? CompetenceLevel3 { get; set; }
+
+    public int? ClassId { get; set; }
+
+    public string? Classname { get; set; }
+
+    public string? Cyclename { get; set; }
 
     public int? Id4 { get; set; }
 

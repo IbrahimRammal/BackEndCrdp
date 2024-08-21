@@ -36,8 +36,7 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
-BackEnd/appsettings.json
-BackEnd/BackEnd.http
-BackEnd/Properties/launchSettings.json
-/BackEnd/Models/CrdpCurriculumMsContext.cs
+/BackEnd/appsettings.json
+/BackEnd/BackEnd.http
+/BackEnd/Properties/launchSettings.json
 /BackEnd/Program.cs

@@ -59,7 +59,17 @@ public partial class CrdpCurriculumMsContext : DbContext
 
     public virtual DbSet<UserRolePermission> UserRolePermissions { get; set; }
 
-    public virtual DbSet<VCompetenciesCascade> VCompetenciesCascades { get; set; }
+    public virtual DbSet<VcompetenciesCascade> VcompetenciesCascades { get; set; }
+
+    public virtual DbSet<VcompetenciesCascadeClass> VcompetenciesCascadeClasses { get; set; }
+
+    public virtual DbSet<VcompetenciesCascadeCross> VcompetenciesCascadeCrosses { get; set; }
+
+    public virtual DbSet<VcompetenciesConceptsCascade> VcompetenciesConceptsCascades { get; set; }
+
+    public virtual DbSet<VconceptsCascade> VconceptsCascades { get; set; }
+
+    public virtual DbSet<VconceptsCascadeClass> VconceptsCascadeClasses { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -328,11 +338,11 @@ public partial class CrdpCurriculumMsContext : DbContext
                 .HasConstraintName("FK_UserRolePermissions_UserRoles");
         });
 
-        modelBuilder.Entity<VCompetenciesCascade>(entity =>
+        modelBuilder.Entity<VcompetenciesCascade>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToView("vCompetenciesCascade");
+                .ToView("VCompetenciesCascade");
 
             entity.Property(e => e.CompetenceName1).HasMaxLength(500);
             entity.Property(e => e.CompetenceName2).HasMaxLength(500);
@@ -342,6 +352,122 @@ public partial class CrdpCurriculumMsContext : DbContext
             entity.Property(e => e.Id2).HasColumnName("id2");
             entity.Property(e => e.Id3).HasColumnName("id3");
             entity.Property(e => e.Id4).HasColumnName("id4");
+        });
+
+        modelBuilder.Entity<VcompetenciesCascadeClass>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("VCompetenciesCascadeClass");
+
+            entity.Property(e => e.Classname)
+                .HasMaxLength(255)
+                .HasColumnName("classname");
+            entity.Property(e => e.CompetenceName1).HasMaxLength(500);
+            entity.Property(e => e.CompetenceName2).HasMaxLength(500);
+            entity.Property(e => e.CompetenceName3).HasMaxLength(500);
+            entity.Property(e => e.CompetenceName4).HasMaxLength(500);
+            entity.Property(e => e.Cyclename)
+                .HasMaxLength(255)
+                .HasColumnName("cyclename");
+            entity.Property(e => e.Id1).HasColumnName("id1");
+            entity.Property(e => e.Id2).HasColumnName("id2");
+            entity.Property(e => e.Id3).HasColumnName("id3");
+            entity.Property(e => e.Id4).HasColumnName("id4");
+        });
+
+        modelBuilder.Entity<VcompetenciesCascadeCross>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("VCompetenciesCascadeCross");
+
+            entity.Property(e => e.CompetenceName1).HasMaxLength(500);
+            entity.Property(e => e.CompetenceName2).HasMaxLength(500);
+            entity.Property(e => e.CompetenceName3).HasMaxLength(500);
+            entity.Property(e => e.CompetenceName4).HasMaxLength(500);
+            entity.Property(e => e.Id1).HasColumnName("id1");
+            entity.Property(e => e.Id2).HasColumnName("id2");
+            entity.Property(e => e.Id3).HasColumnName("id3");
+            entity.Property(e => e.Id4).HasColumnName("id4");
+            entity.Property(e => e.SubCompetenceLevel1).HasColumnName("subCompetenceLevel1");
+            entity.Property(e => e.SubCompetenceLevel2).HasColumnName("subCompetenceLevel2");
+            entity.Property(e => e.SubCompetenceLevel3).HasColumnName("subCompetenceLevel3");
+            entity.Property(e => e.SubCompetenceLevel4).HasColumnName("subCompetenceLevel4");
+            entity.Property(e => e.SubCompetenceName1)
+                .HasMaxLength(500)
+                .HasColumnName("subCompetenceName1");
+            entity.Property(e => e.SubCompetenceName2)
+                .HasMaxLength(500)
+                .HasColumnName("subCompetenceName2");
+            entity.Property(e => e.SubCompetenceName3)
+                .HasMaxLength(500)
+                .HasColumnName("subCompetenceName3");
+            entity.Property(e => e.SubCompetenceName4)
+                .HasMaxLength(500)
+                .HasColumnName("subCompetenceName4");
+            entity.Property(e => e.SubCompetenceType1).HasColumnName("subCompetenceType1");
+            entity.Property(e => e.SubCompetenceType2).HasColumnName("subCompetenceType2");
+            entity.Property(e => e.SubCompetenceType3).HasColumnName("subCompetenceType3");
+            entity.Property(e => e.SubCompetenceType4).HasColumnName("subCompetenceType4");
+            entity.Property(e => e.Subid1).HasColumnName("subid1");
+            entity.Property(e => e.Subid2).HasColumnName("subid2");
+            entity.Property(e => e.Subid3).HasColumnName("subid3");
+            entity.Property(e => e.Subid4).HasColumnName("subid4");
+        });
+
+        modelBuilder.Entity<VcompetenciesConceptsCascade>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("VCompetenciesConceptsCascade");
+
+            entity.Property(e => e.CompetenceName1).HasMaxLength(500);
+            entity.Property(e => e.CompetenceName2).HasMaxLength(500);
+            entity.Property(e => e.CompetenceName3).HasMaxLength(500);
+            entity.Property(e => e.CompetenceName4).HasMaxLength(500);
+            entity.Property(e => e.Compid).HasColumnName("compid");
+            entity.Property(e => e.Compid1).HasColumnName("compid1");
+            entity.Property(e => e.Compid2).HasColumnName("compid2");
+            entity.Property(e => e.Compid3).HasColumnName("compid3");
+            entity.Property(e => e.ConceptName1).HasMaxLength(500);
+            entity.Property(e => e.ConceptName2).HasMaxLength(500);
+            entity.Property(e => e.ConceptName3).HasMaxLength(500);
+            entity.Property(e => e.ConceptName4).HasMaxLength(500);
+            entity.Property(e => e.Conid1).HasColumnName("conid1");
+            entity.Property(e => e.Conid2).HasColumnName("conid2");
+            entity.Property(e => e.Conid3).HasColumnName("conid3");
+            entity.Property(e => e.Conid4).HasColumnName("conid4");
+        });
+
+        modelBuilder.Entity<VconceptsCascade>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("VConceptsCascade");
+
+            entity.Property(e => e.ConceptName1).HasMaxLength(500);
+            entity.Property(e => e.ConceptName2).HasMaxLength(500);
+            entity.Property(e => e.ConceptName3).HasMaxLength(500);
+            entity.Property(e => e.ConceptName4).HasMaxLength(500);
+        });
+
+        modelBuilder.Entity<VconceptsCascadeClass>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("VConceptsCascadeClass");
+
+            entity.Property(e => e.Classname)
+                .HasMaxLength(255)
+                .HasColumnName("classname");
+            entity.Property(e => e.ConceptName1).HasMaxLength(500);
+            entity.Property(e => e.ConceptName2).HasMaxLength(500);
+            entity.Property(e => e.ConceptName3).HasMaxLength(500);
+            entity.Property(e => e.ConceptName4).HasMaxLength(500);
+            entity.Property(e => e.Cyclename)
+                .HasMaxLength(255)
+                .HasColumnName("cyclename");
         });
 
         OnModelCreatingPartial(modelBuilder);
