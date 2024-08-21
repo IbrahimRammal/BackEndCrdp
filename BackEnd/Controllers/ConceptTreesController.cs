@@ -266,7 +266,19 @@ namespace BackEnd.Controllers
             return Ok(result);
         }
 
+        // GET: api/Conceptscascade
+        [HttpGet("GetConceptscascade")]
+        public async Task<ActionResult<IEnumerable<VconceptsCascade>>> GetConceptscascade()
+        {
+            return await _context.VconceptsCascades.ToListAsync();
+        }
 
+        // GET: api/Conceptscascadeclass
+        [HttpGet("GetConceptscascadeclass")]
+        public async Task<ActionResult<IEnumerable<VconceptsCascadeClass>>> GetConceptscascadeclass()
+        {
+            return await _context.VconceptsCascadeClasses.ToListAsync();
+        }
 
     }
 }

@@ -25,9 +25,9 @@ public partial class Competencies
 
     public DateTime? DateCreated { get; set; } = DateTime.Now;
 
-    public int? UserModified { get; set; }
+    public int? UserModified { get; set; } 
 
-    public DateTime? DateModified { get; set; }
+    public DateTime? DateModified { get; set; } = DateTime.Now;
 
     public virtual ICollection<CompetenciesClass> CompetenciesClasses { get; set; } = new List<CompetenciesClass>();
 
