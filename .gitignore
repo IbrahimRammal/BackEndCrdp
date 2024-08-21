@@ -26,6 +26,7 @@ x64/
 x86/
 build/
 bld/
+Properties/
 [Bb]in/
 [Oo]bj/
 [Oo]ut/
@@ -35,3 +36,7 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+/BackEnd/appsettings.json
+/BackEnd/BackEnd.http
+/BackEnd/Properties/launchSettings.json
+/BackEnd/Program.cs
