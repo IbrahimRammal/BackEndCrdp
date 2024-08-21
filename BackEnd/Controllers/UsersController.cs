@@ -271,26 +271,29 @@ namespace BackEnd.Controllers
         [HttpGet("grouped-by-workgroup")]
         public async Task<ActionResult<GroupedUsersResponse>> GetGroupedUsers()
         {
+
             try
             {
-                // Get the grouped users
-                var groupedUsers = await _context.Users
-                    .Where(u => u.WorkGroup.HasValue)
-                    .GroupBy(u => u.WorkGroup)
-                    .Select(g => new GroupedUsersDto
-                    {
-                        GroupName = $"WorkGroup {g.Key}",
-                        Users = g.Select(u => new UserDto
-                        {
-                            Id = u.Id,
-                            Username = u.Username,
-                            Fname = u.Fname,
-                            Mname = u.Mname,
-                            Lname = u.Lname,
-                            PhoneNb = u.PhoneNb,
-                            Email = u.Email
-                        }).ToList()
-                    }).ToListAsync();
+                // Fetch grouped users and join with CodesContent to get the group names
+                var groupedUsers = await (from user in _context.Users
+                                          join codeContent in _context.CodesContents
+                                          on user.WorkGroup equals codeContent.Id
+                                          where user.WorkGroup.HasValue
+                                          group new { user, codeContent } by codeContent.CodeContentName into g
+                                          select new GroupedUsersDto
+                                          {
+                                              GroupName = g.Key, // Group name from CodesContent
+                                              Users = g.Select(x => new UserDto
+                                              {
+                                                  Id = x.user.Id,
+                                                  Username = x.user.Username,
+                                                  Fname = x.user.Fname,
+                                                  Mname = x.user.Mname,
+                                                  Lname = x.user.Lname,
+                                                  PhoneNb = x.user.PhoneNb,
+                                                  Email = x.user.Email
+                                              }).ToList()
+                                          }).ToListAsync();
 
                 // Calculate the total number of workgroups
                 int workGroupCount = groupedUsers.Count;
