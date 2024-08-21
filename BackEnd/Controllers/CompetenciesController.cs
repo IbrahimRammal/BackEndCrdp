@@ -85,12 +85,6 @@ namespace BackEnd.Controllers
             return await _context.Competencies.ToListAsync();
         }
 
-        // GET: api/Competenciescascade
-        [HttpGet("GetCompetenciescascade")]
-        public async Task<ActionResult<IEnumerable<VCompetenciesCascade>>> GetCompetenciescascade()
-        {
-            return await _context.VCompetenciesCascades.ToListAsync();
-        }
 
         // GET: api/Competencies/5
         [HttpGet("GetCompetenciesById{id}")]
@@ -370,6 +364,32 @@ namespace BackEnd.Controllers
             return Ok(competenciesInfo);
         }
 
+        // GET: api/Competenciescascade
+        [HttpGet("GetCompetenciescascade")]
+        public async Task<ActionResult<IEnumerable<VcompetenciesCascade>>> GetCompetenciescascade()
+        {
+            return await _context.VcompetenciesCascades.ToListAsync();
+        }
+
+        // GET: api/Competenciescascade
+        [HttpGet("GetCompetenciescascadeclass")]
+        public async Task<ActionResult<IEnumerable<VcompetenciesCascadeClass>>> GetCompetenciescascadeclass()
+        {
+            return await _context.VcompetenciesCascadeClasses.ToListAsync();
+        }
+
+        [HttpGet("GetCompetenciescascadecross")]
+        public async Task<ActionResult<IEnumerable<VcompetenciesCascadeCross>>> GetCompetenciescascadecross()
+        {
+            return await _context.VcompetenciesCascadeCrosses.ToListAsync();
+        }
+
+
+        [HttpGet("GetCompetenciesConceptsCascade")]
+        public async Task<ActionResult<IEnumerable<VcompetenciesConceptsCascade>>> GetCompetenciesConceptsCascade()
+        {
+            return await _context.VcompetenciesConceptsCascades.ToListAsync();
+        }
 
 
     }
