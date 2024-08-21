@@ -16,6 +16,7 @@ using System.Text;
 using Newtonsoft.Json;
 using BackEnd.Data;
 using BackEnd.Class;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 namespace BackEnd.Controllers
 {
     [Route("api/[controller]")]
@@ -314,5 +315,122 @@ namespace BackEnd.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
+
+        //mohamadbaydoun
+        [HttpPost("ChangePassword")]
+        public async Task<ActionResult<ChangePassword>> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            var ChangePasswordRequestResult = new ChangePasswordRequestResult();
+            try
+            {
+                var user = await _context.Users.FindAsync(request.Id);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                user.Password = GetHashPassword(request.Password);
+                await _context.SaveChangesAsync();
+                ChangePasswordRequestResult.Success = true;
+                return Ok(ChangePasswordRequestResult);
+            }
+            catch (Exception ex)
+            {
+
+                // Return an appropriate HTTP response
+                if (ex is ArgumentException)
+                {
+                    return BadRequest(ex.Message);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while changing the password.");
+                }
+            }
+        }
+        public class ChangePasswordRequest
+        {
+            public int Id { get; set; }
+            public string Password { get; set; }
+        }
+
+        public class ChangePasswordRequestResult
+        {
+            public bool Success { get; set; }
+        }
+
+
+
+
+        //mohamadbaydoun
+        [HttpPost("BulkInsertUsers")]
+        [Consumes("application/json")]
+        public async Task<ActionResult<BulkOperationResult>> BulkInsertUsers([FromBody] List<User> users)
+        {
+            var bulkOperationResult = new BulkOperationResult();
+
+            try
+            {
+                foreach (var user in users)
+                {
+                    var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == user.Username);
+
+                    if (existingUser != null)
+                    {
+                        // Update existing user
+                        existingUser.Fname = user.Fname;
+                        existingUser.Mname = user.Mname;
+                        existingUser.Lname = user.Lname;
+                        existingUser.PhoneNb = user.PhoneNb;
+                        existingUser.Email = user.Email;
+                        existingUser.Password = GetHashPassword(user.Password);
+                        existingUser.Details = user.Details;
+                        existingUser.UserStatus = user.UserStatus;
+                        existingUser.WorkGroup = user.WorkGroup;
+
+                        _context.Users.Update(existingUser);
+                        bulkOperationResult.UsersUpdated++;
+                    }
+                    else
+                    {
+                        // Insert new user
+                        user.Password = GetHashPassword(user.Password);
+                        _context.Users.Add(user);
+                        bulkOperationResult.UsersInserted++;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                bulkOperationResult.Success = true;
+                bulkOperationResult.Message = "تمت العملية بنجاح.";
+                return Ok(bulkOperationResult);
+            }
+            catch (Exception ex)
+            {
+                bulkOperationResult.Success = false;
+                bulkOperationResult.Message = "حدث خطأ أثناء تنفيذ العملية.";
+                return BadRequest(bulkOperationResult);
+            }
+        }
+
+        public class BulkOperationResult
+        {
+            public bool Success { get; set; }
+            public string Message { get; set; }
+            public int UsersInserted { get; set; }
+            public int UsersUpdated { get; set; }
+        }
+
+
+
+
+
+
     }
+
+
+
+
 }

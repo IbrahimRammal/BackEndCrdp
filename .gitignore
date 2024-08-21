@@ -39,3 +39,5 @@ msbuild.wrn
 BackEnd/appsettings.json
 BackEnd/BackEnd.http
 BackEnd/Properties/launchSettings.json
+/BackEnd/Models/CrdpCurriculumMsContext.cs
+/BackEnd/Program.cs

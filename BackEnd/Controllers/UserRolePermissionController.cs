@@ -92,18 +92,38 @@ namespace BackEnd.Controllers
 
         [HttpPost("InsertUserRolePermission")]
         [Consumes("application/json")]
-        public async Task<ActionResult<UserRolePermission>> InsertUserRole([FromBody] UserRolePermission userRoleDto)
+        public async Task<ActionResult<IEnumerable<UserRolePermission>>> InsertUserRole([FromBody] List<UserRolePermission> userRoleDtos)
         {
-            var user = new UserRolePermission
-            {
-                UserRoleId = userRoleDto.UserRoleId,
-                ConceptFiled = userRoleDto.ConceptFiled,
-                Class = userRoleDto.Class,
-            };
-
+            var userRolePermissions = new List<UserRolePermission>();
             try
             {
-                _context.UserRolePermissions.Add(user);
+                foreach (var userRoleDto in userRoleDtos)
+                {
+                    // Check if the UserRolePermission already exists
+                    var existingUserRolePermission = await _context.UserRolePermissions.FirstOrDefaultAsync(
+                        urp => urp.UserRoleId == userRoleDto.UserRoleId
+                            && urp.ConceptFiled == userRoleDto.ConceptFiled
+                            && urp.Class == userRoleDto.Class
+                    );
+
+                    if (existingUserRolePermission == null)
+                    {
+                        var user = new UserRolePermission
+                        {
+                            UserRoleId = userRoleDto.UserRoleId,
+                            ConceptFiled = userRoleDto.ConceptFiled,
+                            Class = userRoleDto.Class
+                        };
+
+                        _context.UserRolePermissions.Add(user);
+                        userRolePermissions.Add(user);
+                    }
+                    else
+                    {
+                        userRolePermissions.Add(existingUserRolePermission);
+                    }
+                }
+
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -111,8 +131,74 @@ namespace BackEnd.Controllers
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
 
-            return Ok(user);
+            return Ok(userRolePermissions);
         }
+
+
+
+        [HttpPost("InsertUserRolePermissionBulk")]
+        [Consumes("application/json")]
+        public async Task<ActionResult> InsertUserRolePermissionBulk(InsertUserRolePermissionBulkRequest request)
+        {
+            try
+            {
+
+                foreach (var userId in request.SelectedUsers)
+                {
+                    // Check if the user-role association exists
+                    var userRole = await _context.UserRoles.FirstOrDefaultAsync(ur => ur.UserId == userId && ur.RoleId == request.SelectedRole);
+                    if (userRole == null)
+                    {
+                        // Insert the user-role association
+                        userRole = new UserRole
+                        {
+                            UserId = userId,
+                            RoleId = request.SelectedRole
+                        };
+                        _context.UserRoles.Add(userRole);
+                        await _context.SaveChangesAsync();
+
+                    }
+
+                    // Loop through the selected permissions and insert them if they don't exist
+                    foreach (var permission in request.SelectedPermissions)
+                    {
+                        var userRolePermission = await _context.UserRolePermissions.FirstOrDefaultAsync(
+                            urp => urp.UserRoleId == userRole.Id && urp.ConceptFiled == permission.ConceptFiled && urp.Class == permission.Class);
+                        if (userRolePermission == null)
+                        {
+                            userRolePermission = new UserRolePermission
+                            {
+                                UserRoleId = userRole.Id,
+                                ConceptFiled = permission.ConceptFiled,
+                                Class = permission.Class
+                            };
+                            _context.UserRolePermissions.Add(userRolePermission);
+                        }
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                return StatusCode(200, new { success = true, message = "تم تعيين الدور بنجاح." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(200, new { success = false, message = ex.Message });
+            }
+        }
+        public class InsertUserRolePermissionBulkRequest
+        {
+            public List<PermissionDto> SelectedPermissions { get; set; }
+            public int SelectedRole { get; set; }
+            public List<int> SelectedUsers { get; set; }
+        }
+        public class PermissionDto
+        {
+            public int Class { get; set; }
+            public int ConceptFiled { get; set; }
+        }
+
+
 
 
         [HttpDelete("DeleteUserRolePermission")]
@@ -144,6 +230,35 @@ namespace BackEnd.Controllers
         {
             return _context.UserRolePermissions.Any(e => e.Id == id);
         }
+
+
+
+
+        [HttpPost("BulkDeleteUserRolePermission")]
+        public async Task<IActionResult> BulkDeleteUserRolePermission([FromBody] IEnumerable<int> keys)
+        {
+            try
+            {
+                if (keys == null || !keys.Any())
+                {
+                    return BadRequest("No keys provided.");
+                }
+
+                // Fetch the user role permissions based on the provided keys
+                var userRolePermissions = await _context.UserRolePermissions.Where(p => keys.Contains(p.Id)).ToListAsync();
+
+                // Remove the user role permissions
+                _context.UserRolePermissions.RemoveRange(userRolePermissions);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = $"{userRolePermissions.Count} user role permissions deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = "An error occurred while deleting user role permissions." });
+            }
+        }
+
 
 
     }

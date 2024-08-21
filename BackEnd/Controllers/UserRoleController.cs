@@ -37,6 +37,59 @@ namespace BackEnd.Controllers
 
 
 
+
+        [HttpGet("GetAllUserRoleDetailed")]
+        public async Task<ActionResult<IEnumerable<dynamic>>> GetAllUserRoleDetailed()
+        {
+            var result = await (from ur in _context.UserRoles
+                                join u in _context.Users on ur.UserId equals u.Id
+                                join r in _context.Roles on ur.RoleId equals r.Id into roleGroup
+                                from r in roleGroup.DefaultIfEmpty()
+                                join urp in _context.UserRolePermissions on ur.Id equals urp.UserRoleId into permissionGroup
+                                from urp in permissionGroup.DefaultIfEmpty()
+                                join cc in _context.CodesContents on urp.Class equals cc.Id into classGroup
+                                from cc in classGroup.DefaultIfEmpty()
+                                join cf in _context.CodesContents on urp.ConceptFiled equals cf.Id into conceptGroup
+                                from cf in conceptGroup.DefaultIfEmpty()
+                                select new
+                                {
+                                    Id = u.Username,
+                                    UserId = u.Id,
+                                    Username = $"{u.Username}-{u.Fname} {u.Mname} {u.Lname}",
+                                    RoleName = r.RoleName,
+                                    Permissions = $"{cc.CodeContentName} : {cf.CodeContentName}"
+                                })
+                                .ToListAsync();
+
+            // Get all the unique user IDs from the result
+            var allUserIds = await _context.Users.Select(u => u.Id).ToListAsync();
+
+            // Check if any users are missing from the result and add them with an empty role and permissions
+            foreach (var userId in allUserIds)
+            {
+                if (!result.Any(x => x.UserId == userId))
+                {
+                    var user = await _context.Users.FindAsync(userId);
+                    result.Add(new
+                    {
+                        Id = user.Username,
+                        UserId = user.Id,
+                        Username = $"{user.Username}-{user.Fname} {user.Mname} {user.Lname}",
+                        RoleName = "",
+                        Permissions = ""
+                    });
+                }
+            }
+
+            return Ok(result);
+        }
+
+
+
+
+
+
+
         // GET api/<UserRoleController>/5
         [HttpGet("GetUserRole/{id}")]
         public async Task<ActionResult<UserRole>> GetUserRole(int id)
@@ -128,15 +181,20 @@ namespace BackEnd.Controllers
                 return BadRequest("Invalid key format.");
             }
 
-
-
-            var user = await _context.UserRoles.FindAsync(key);
-            if (user == null)
+            // Find the UserRole
+            var userRole = await _context.UserRoles.FindAsync(key);
+            if (userRole == null)
             {
                 return NotFound();
             }
 
-            _context.UserRoles.Remove(user);
+            // Delete all associated UserRolePermissions
+            var userRolePermissions = await _context.UserRolePermissions.Where(p => p.UserRoleId == key).ToListAsync();
+            _context.UserRolePermissions.RemoveRange(userRolePermissions);
+            await _context.SaveChangesAsync();
+
+            // Delete the UserRole
+            _context.UserRoles.Remove(userRole);
             await _context.SaveChangesAsync();
 
             return NoContent();
