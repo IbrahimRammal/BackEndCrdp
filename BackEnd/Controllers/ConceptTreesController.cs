@@ -1,14 +1,8 @@
 ﻿using BackEnd.Class;
-using BackEnd.Data;
 using BackEnd.Models;
-using DevExtreme.AspNet.Data;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.VisualBasic;
 using Newtonsoft.Json;
-using System.Security.Cryptography;
 
 namespace BackEnd.Controllers
 {
@@ -27,12 +21,74 @@ namespace BackEnd.Controllers
 
         }
 
+
+
+
+
+
         // GET: api/ConceptTrees
         [HttpGet("GetConceptTrees")]
         public async Task<ActionResult<IEnumerable<ConceptTree>>> GetConceptTrees()
         {
             return await _context.ConceptTrees.ToListAsync();
         }
+
+        [HttpGet("GetConceptTreesbyClasses")]
+        public async Task<ActionResult<IEnumerable<ConceptTree>>> GetConceptTreesbyClasses()
+        {
+            // Query to get concept IDs and associated class names or null if no class is joined
+            var conceptTreeWithClasses = from ct in _context.ConceptTrees
+                                         join ctc in _context.ConceptTreeClasses
+                                         on ct.Id equals ctc.Ctid into ctcGroup
+                                         from ctc in ctcGroup.DefaultIfEmpty()
+                                         join cc in _context.CodesContents
+                                         on ctc.ClassId equals cc.Id into ccGroup
+                                         from cc in ccGroup.DefaultIfEmpty()
+                                         group cc.CodeContentName by new
+                                         {
+                                             ct.Id,
+                                             ct.IdNumber,
+                                             ct.ConceptName,
+                                             ct.ConceptType,
+                                             ct.ConceptDomain,
+                                             ct.ConceptField,
+                                             ct.ConceptDetails,
+                                             ct.ConceptParentId,
+                                             ct.ConceptActive,
+                                             ct.ConceptLevel,
+                                             ct.UserCreated,
+                                             ct.DateCreated,
+                                             ct.UserModified,
+                                             ct.DateModified,
+                                             // Include other relevant properties
+                                         } into grouped
+                                         select new 
+                                         {
+                                             grouped.Key.Id,
+                                             grouped.Key.IdNumber,
+                                             grouped.Key.ConceptName,
+                                             grouped.Key.ConceptType,
+                                             grouped.Key.ConceptDomain,
+                                             grouped.Key.ConceptField,
+                                             grouped.Key.ConceptDetails,
+                                             grouped.Key.ConceptParentId,
+                                             grouped.Key.ConceptActive,
+                                             grouped.Key.ConceptLevel,
+                                             grouped.Key.UserCreated,
+                                             grouped.Key.DateCreated,
+                                             grouped.Key.UserModified,
+                                             grouped.Key.DateModified,
+                                             ClassNames = grouped.Where(name => name != null).ToList() // Aggregated list of class names or empty list if no class is joined
+                                         };
+
+            // Execute the query and map to ConceptTree entities
+            var conceptTrees = await conceptTreeWithClasses
+                .AsNoTracking()
+                .ToListAsync();
+
+            return Ok(conceptTrees);
+        }
+
 
         // GET: api/ConceptTrees/5
         [HttpGet("GetConceptTreesById{id}")]
@@ -135,13 +191,24 @@ namespace BackEnd.Controllers
                 return BadRequest("Invalid key format.");
             }
 
-
-
             var concept = await _context.ConceptTrees.FindAsync(key);
             if (concept == null)
             {
                 return NotFound();
             }
+
+            // Find all ConceptTreeClasses where eid equals Ctid (assuming Ctid is key)
+            var conceptTreeClasses = _context.ConceptTreeClasses
+                .Where(c => c.Ctid == key)
+                .ToList();
+
+            if (conceptTreeClasses.Any())
+            {
+                _context.ConceptTreeClasses.RemoveRange(conceptTreeClasses);
+                await _context.SaveChangesAsync();
+            }
+
+
 
             _context.ConceptTrees.Remove(concept);
             await _context.SaveChangesAsync();
@@ -149,10 +216,6 @@ namespace BackEnd.Controllers
             return NoContent();
         }
 
-        private bool ConceptTreesExists(int id)
-        {
-            return _context.ConceptTrees.Any(e => e.Id == id);
-        }
 
         // By kamel Nazar
         [HttpPost("InsertConceptTreeClasses")]
