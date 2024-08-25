@@ -36,4 +36,6 @@ public partial class ConceptTree
     public virtual ICollection<CompetenciesConceptTree> CompetenciesConceptTrees { get; set; } = new List<CompetenciesConceptTree>();
 
     public virtual ICollection<ConceptTreeClass> ConceptTreeClasses { get; set; } = new List<ConceptTreeClass>();
+    //public List<string> ClassNames { get; set; } = new List<string>();
+
 }
