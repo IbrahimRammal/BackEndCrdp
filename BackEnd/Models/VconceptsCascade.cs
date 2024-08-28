@@ -22,4 +22,14 @@ public partial class VconceptsCascade
     public int? Id4 { get; set; }
 
     public string? ConceptName4 { get; set; }
+
+    public string? ConceptDetails1 { get; set; }
+
+    public string? ConceptDetails2 { get; set; }
+
+    public string? ConceptDetails3 { get; set; }
+
+    public string? ConceptDetails4 { get; set; }
+
+    public string? IdNumber1 { get; set; }
 }

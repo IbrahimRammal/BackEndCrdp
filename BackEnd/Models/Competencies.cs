@@ -17,17 +17,21 @@ public partial class Competencies
 
     public int? CompetenceParentId { get; set; }
 
+    public int? GroupId { get; set; }
+
     public bool? CompetenceActive { get; set; }
 
     public int? CompetenceLevel { get; set; }
 
     public int? UserCreated { get; set; }
 
-    public DateTime? DateCreated { get; set; } = DateTime.Now;
+    public DateTime? DateCreated { get; set; }
 
-    public int? UserModified { get; set; } 
+    public int? UserModified { get; set; }
 
-    public DateTime? DateModified { get; set; } = DateTime.Now;
+    public DateTime? DateModified { get; set; }
+
+    public int? ConceptField { get; set; }
 
     public virtual ICollection<CompetenciesClass> CompetenciesClasses { get; set; } = new List<CompetenciesClass>();
 

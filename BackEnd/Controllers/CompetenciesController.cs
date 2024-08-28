@@ -4,10 +4,12 @@ using BackEnd.Models;
 using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
+using System.Data;
 using System.Security.Cryptography;
 
 namespace BackEnd.Controllers
@@ -476,84 +478,6 @@ namespace BackEnd.Controllers
         }
 
 
-        [HttpPost("AddCompetences")]
-        public IActionResult AddCompetences(CompetenciesInfo competenciesInfo)
-        {
-            try
-            {
-                var Competencies = new Competencies();
-                Competencies.CompetenceName = competenciesInfo.competencieName;
-                Competencies.CompetenceParentId = 0;
-                Competencies.CompetenceActive = true;
-                Competencies.CompetenceType = competenciesInfo.CompetenceTypeValue;
-                _context.Competencies.Add(Competencies);
-                _context.SaveChanges();
-                int idcompetence = Competencies.Id;
-                for (int i = 0; i < competenciesInfo.valuePrimayName.Count(); i++)
-                {
-                    var CompetenciesP = new Competencies();
-                    CompetenciesP.CompetenceName = competenciesInfo.valuePrimayName[i];
-                    CompetenciesP.CompetenceParentId = idcompetence;
-                    CompetenciesP.CompetenceActive = true;
-                    CompetenciesP.CompetenceType = competenciesInfo.CompetenceTypeValue;
-                    _context.Competencies.Add(CompetenciesP);
-                    _context.SaveChanges();
-                    int idcompetenceP = CompetenciesP.Id;
-                    for (int j = 0; j < competenciesInfo.SecondarySelectedClasses[i].Count(); j++)
-                    {
-                        var CompetenciesS = new Competencies();
-                        CompetenciesS.CompetenceName = competenciesInfo.selectedNameSecondary[i][j];
-                        CompetenciesS.CompetenceParentId = idcompetenceP;
-                        CompetenciesS.CompetenceActive = true;
-                        CompetenciesS.CompetenceType = competenciesInfo.CompetenceTypeValue;
-                        _context.Competencies.Add(CompetenciesS);
-                        _context.SaveChanges();
-                        int idcompetenceS = CompetenciesS.Id;
-                        for (int iclass = 0; iclass < competenciesInfo.SecondarySelectedClasses[i][j].Count(); iclass++)
-                        {
-                            var competenciesClass = new CompetenciesClass();
-                            competenciesClass.Cid = idcompetenceS;
-                            competenciesClass.ClassId = competenciesInfo.SecondarySelectedClasses[i][j][iclass];
-                            _context.CompetenciesClasses.Add(competenciesClass);
-                            _context.SaveChanges();
-                        }
-                        //for (int iConceptTree = 0; iConceptTree < competenciesInfo.SecondarySelectedConceptTree[i][j].Count(); iConceptTree++)
-                        //{
-                        //    var competenciesConceptTree = new CompetenciesConceptTree();
-                        //    competenciesConceptTree.Cid = idcompetenceS;
-                        //    competenciesConceptTree.ConceptTreeId = competenciesInfo.SecondarySelectedClasses[i][j][iConceptTree];
-                        //    _context.CompetenciesConceptTrees.Add(competenciesConceptTree);
-                        //    _context.SaveChanges();
-
-                        //}
-                        if (competenciesInfo.DetailsSecondary.Count() > 0)
-                        {
-                            for (int idetail = 0; idetail < competenciesInfo.DetailsSecondary[i][j].Count(); idetail++)
-                            {
-                                var competenciesdetail = new Competencies();
-                                competenciesdetail.CompetenceName = competenciesInfo.DetailsSecondary[i][j][idetail];
-                                competenciesdetail.CompetenceDetails = competenciesInfo.DetailsSecondary[i][j][idetail];
-                                competenciesdetail.CompetenceParentId = idcompetenceS;
-                                competenciesdetail.CompetenceActive = true;
-                                competenciesdetail.CompetenceType = competenciesInfo.CompetenceTypeValue;
-                                _context.Competencies.Add(competenciesdetail);
-                                _context.SaveChanges();
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-
-                return BadRequest();
-            }
-
-            // Process the received data here
-            // For demonstration, we're just returning it back
-            return Ok(competenciesInfo);
-        }
-
         // GET: api/Competenciescascade
         [HttpGet("GetCompetenciescascade")]
         public async Task<ActionResult<IEnumerable<VcompetenciesCascade>>> GetCompetenciescascade()
@@ -580,6 +504,159 @@ namespace BackEnd.Controllers
         {
             return await _context.VcompetenciesConceptsCascades.ToListAsync();
         }
+
+        [HttpPost("PostSecondaryPublicC")]
+        public async Task<ActionResult<IEnumerable<CompetencePublicSecondary>>> PostSecondaryPublicC(SearchRules searchRules)
+        {
+
+            //var classesIdsString = string.Join(",", classesIds);
+            //var competenciesSecondaryPublicC = await _context.Competencies
+            //    .FromSqlRaw($"EXEC dbo.GetSecondaryPublicC @classesId, @knowledgeField, {classesIdsString}")
+            //    .ToListAsync();
+
+            // Prepare the DataTable
+            var dt = new DataTable();
+            dt.Columns.Add("Id", typeof(int));
+
+            // Populate the DataTable with your list of integers
+            foreach (var id in searchRules.classes)
+            {
+                dt.Rows.Add(id);
+            }
+
+            // Set up the parameters including the table-valued parameter
+            var parameters = new[]
+            {
+    new SqlParameter("@ClassesId", SqlDbType.Structured)
+    {
+        TypeName = "dbo.ClassesId",
+        Value = dt
+    }
+};
+
+            // Execute the stored procedure
+            var competenciesSecondaryPublicC = await _context.VcompetenciesCascadeClasses
+                .FromSqlRaw("EXEC dbo.GetSecondaryPublicCFromView @ClassesId", parameters)
+                .ToListAsync();
+
+            var CompetencePublicSecondaryData = competenciesSecondaryPublicC.Select(x => new CompetencePublicSecondary
+            {
+                idC = x.Id1,
+                idP = x.Id2,
+                idS = x.Id3,
+                competenceName = x.CompetenceName1,
+                competenceNameP = x.CompetenceName2,
+                competenceNameS = x.CompetenceName3,
+
+
+            }).ToList();
+            //var groupedProducts = competenciesSecondaryPublicC.GroupBy(p => p.GroupId);
+            return CompetencePublicSecondaryData;
+        }
+
+        [HttpPost("AddCompetences")]
+        public IActionResult AddCompetences(CompetenciesInfo competenciesInfo)
+        {
+            try
+            {
+                var Competencies = new Competencies();
+                Competencies.CompetenceName = competenciesInfo.competencieName;
+                Competencies.IdNumber = competenciesInfo.competencieNumber;
+                Competencies.CompetenceDetails = competenciesInfo.DetailsCompetence;
+                Competencies.CompetenceParentId = 0;
+                Competencies.CompetenceActive = true;
+                Competencies.CompetenceType = competenciesInfo.CompetenceTypeValue;
+                Competencies.CompetenceLevel = 9;
+                Competencies.ConceptField = competenciesInfo.knowledgeFieldValue;
+                _context.Competencies.Add(Competencies);
+                _context.SaveChanges();
+                Competencies.GroupId = Competencies.Id;
+                _context.SaveChanges();
+                int idcompetence = Competencies.Id;
+                for (int i = 0; i < competenciesInfo.valuePrimayName.Count(); i++)
+                {
+                    var CompetenciesP = new Competencies();
+                    CompetenciesP.CompetenceName = competenciesInfo.valuePrimayName[i];
+                    CompetenciesP.CompetenceParentId = idcompetence;
+                    CompetenciesP.CompetenceActive = true;
+                    CompetenciesP.CompetenceLevel = 10;
+                    CompetenciesP.CompetenceType = competenciesInfo.CompetenceTypeValue;
+                    CompetenciesP.CompetenceDetails = competenciesInfo.valueDetailsName[i].ToString();
+                    CompetenciesP.GroupId = Competencies.Id;
+
+                    _context.Competencies.Add(CompetenciesP);
+                    _context.SaveChanges();
+                    int idcompetenceP = CompetenciesP.Id;
+                    for (int j = 0; j < competenciesInfo.selectedNameSecondary[i].Count(); j++)
+                    {
+                        var CompetenciesS = new Competencies();
+                        CompetenciesS.CompetenceName = competenciesInfo.selectedNameSecondary[i][j];
+                        CompetenciesS.CompetenceParentId = idcompetenceP;
+                        CompetenciesS.CompetenceActive = true;
+                        CompetenciesS.CompetenceLevel = 11;
+                        CompetenciesS.CompetenceType = competenciesInfo.CompetenceTypeValue;
+                        CompetenciesS.GroupId = Competencies.Id;
+                        CompetenciesS.CompetenceDetails = competenciesInfo.selectedDetailsSecondary[i][j].ToString();
+
+                        _context.Competencies.Add(CompetenciesS);
+
+                        _context.SaveChanges();
+                        int idcompetenceS = CompetenciesS.Id;
+                        for (int iclass = 0; iclass < competenciesInfo.SecondarySelectedClasses[i][j].Count(); iclass++)
+                        {
+                            var competenciesClass = new CompetenciesClass();
+                            competenciesClass.Cid = idcompetenceS;
+                            competenciesClass.ClassId = competenciesInfo.SecondarySelectedClasses[i][j][iclass];
+                            _context.CompetenciesClasses.Add(competenciesClass);
+                            _context.SaveChanges();
+                        }
+                        for (int iConceptTree = 0; iConceptTree < competenciesInfo.SecondarySelectedConceptTree[i][j].Count(); iConceptTree++)
+                        {
+                            var competenciesConceptTree = new CompetenciesConceptTree();
+                            competenciesConceptTree.Cid = idcompetenceS;
+                            competenciesConceptTree.ConceptTreeId = competenciesInfo.SecondarySelectedConceptTree[i][j][iConceptTree];
+                            _context.CompetenciesConceptTrees.Add(competenciesConceptTree);
+                            _context.SaveChanges();
+
+                        }
+                        for (int iPublicC = 0; iPublicC < competenciesInfo.SecondarySelectedPublicC[i][j].Count(); iPublicC++)
+                        {
+                            var CompetenciesCross = new CompetenciesCross();
+                            CompetenciesCross.CompMainId = idcompetenceS;
+                            CompetenciesCross.CompSubId = competenciesInfo.SecondarySelectedPublicC[i][j][iPublicC];
+                            _context.CompetenciesCrosses.Add(CompetenciesCross);
+                            _context.SaveChanges();
+
+                        }
+                        for (int idetail = 0; idetail < competenciesInfo.DetailsSecondary[i][j].Count(); idetail++)
+                        {
+                            var competenciesdetail = new Competencies();
+                            competenciesdetail.CompetenceName = competenciesInfo.DetailsSecondary[i][j][idetail];
+                            competenciesdetail.CompetenceDetails = competenciesInfo.DetailsSecondary[i][j][idetail];
+                            competenciesdetail.CompetenceParentId = idcompetenceS;
+                            competenciesdetail.CompetenceActive = true;
+                            competenciesdetail.CompetenceLevel = 12;
+                            competenciesdetail.CompetenceType = competenciesInfo.CompetenceTypeValue;
+                            competenciesdetail.GroupId = Competencies.Id;
+                            _context.Competencies.Add(competenciesdetail);
+                            _context.SaveChanges();
+                        }
+                    }
+                }
+            }
+
+            catch (Exception)
+            {
+
+                return BadRequest();
+            }
+
+            // Process the received data here
+            // For demonstration, we're just returning it back
+            return Ok(competenciesInfo);
+        }
+
+
 
 
     }

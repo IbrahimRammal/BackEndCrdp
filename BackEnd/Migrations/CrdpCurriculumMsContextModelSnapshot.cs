@@ -41,7 +41,7 @@ namespace BackEnd.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Codes");
+                    b.ToTable("Codes", (string)null);
                 });
 
             modelBuilder.Entity("BackEnd.Models.CodesContent", b =>
@@ -117,7 +117,7 @@ namespace BackEnd.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Competencies");
+                    b.ToTable("Competencies", (string)null);
                 });
 
             modelBuilder.Entity("BackEnd.Models.CompetenciesClass", b =>
@@ -335,7 +335,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("Cid");
 
-                    b.ToTable("CompetenciesSteps");
+                    b.ToTable("CompetenciesSteps", (string)null);
                 });
 
             modelBuilder.Entity("BackEnd.Models.CompetenciesVersion", b =>
@@ -390,7 +390,7 @@ namespace BackEnd.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CompetenciesVersions");
+                    b.ToTable("CompetenciesVersions", (string)null);
                 });
 
             modelBuilder.Entity("BackEnd.Models.ConceptTree", b =>
@@ -609,7 +609,7 @@ namespace BackEnd.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("BackEnd.Models.RoleService", b =>
@@ -657,7 +657,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("RoleServices");
+                    b.ToTable("RoleServices", (string)null);
                 });
 
             modelBuilder.Entity("BackEnd.Models.Service", b =>
@@ -719,7 +719,7 @@ namespace BackEnd.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Services");
+                    b.ToTable("Services", (string)null);
                 });
 
             modelBuilder.Entity("BackEnd.Models.User", b =>
@@ -774,7 +774,7 @@ namespace BackEnd.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("BackEnd.Models.UserRole", b =>
@@ -797,7 +797,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("BackEnd.Models.UserRolePermission", b =>
@@ -824,7 +824,7 @@ namespace BackEnd.Migrations
 
                     b.HasIndex("UserRoleId");
 
-                    b.ToTable("UserRolePermissions");
+                    b.ToTable("UserRolePermissions", (string)null);
                 });
 
             modelBuilder.Entity("BackEnd.Models.VCompetenciesCascade", b =>
