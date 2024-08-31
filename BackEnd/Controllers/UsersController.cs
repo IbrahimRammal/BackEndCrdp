@@ -17,6 +17,8 @@ using Newtonsoft.Json;
 using BackEnd.Data;
 using BackEnd.Class;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using BackEnd.Helper;
+using Microsoft.CodeAnalysis.Scripting;
 namespace BackEnd.Controllers
 {
     [Route("api/[controller]")]
@@ -25,12 +27,12 @@ namespace BackEnd.Controllers
     {
         private readonly CrdpCurriculumMsContext _context;
         private readonly IConfiguration _configuration;
-        
+
         public UsersController(CrdpCurriculumMsContext context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
-           
+
         }
 
         // GET: api/Users
@@ -84,45 +86,7 @@ namespace BackEnd.Controllers
 
             return NoContent();
         }
-        [HttpPut("UpdateUser")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public async Task<IActionResult> UpdateUser([FromForm] IFormCollection form)
-        {
-            try
-            {
-                var key = form["key"];
-                var values = form["values"];
-
-                // Convert the key to int before using it to find the entity
-                if (!int.TryParse(key, out int id))
-                {
-                    return BadRequest("Invalid key format.");
-                }
-
-                var user = await _context.Users.FindAsync(id); // Use the converted int here
-
-                // Check if the concept exists
-                if (user == null)
-                {
-                    return NotFound("concept not found.");
-                }
-
-                // Update concept values
-                JsonConvert.PopulateObject(values, user);
-
-                // Save changes
-                await _context.SaveChangesAsync();
-                await _context.Entry(user).ReloadAsync();
-                return Ok(new { success = true, message = "concept updated successfully." });
-            }
-            catch (Exception ex)
-            {
-                // Return an error response in case of an exception
-                return StatusCode(500, new { success = false, message = ex.Message });
-            }
-        }
-        // POST: api/Users
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    
         [HttpPost("InsertUser")]
         [Consumes("application/x-www-form-urlencoded")]
         public async Task<ActionResult<User>> PostUser([FromForm] IFormCollection form)
@@ -132,7 +96,7 @@ namespace BackEnd.Controllers
             {
                 var key = form["key"];
                 var values = form["values"];
-               
+
                 JsonConvert.PopulateObject(values, user);
 
                 user.Password = GetHashPassword(user.Password);
@@ -142,9 +106,9 @@ namespace BackEnd.Controllers
             catch (Exception)
             {
 
-               
+
             }
-            
+
 
             return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
@@ -174,11 +138,11 @@ namespace BackEnd.Controllers
         private string GetHashPassword(string password)
         {
             IdentityUser applicationUser = new IdentityUser();
-            RandomNumberGenerator _rng =  RandomNumberGenerator.Create();
+            RandomNumberGenerator _rng = RandomNumberGenerator.Create();
             return Convert.ToBase64String(HashPasswordV2(password, _rng));
-           
+
         }
-        private  byte[] HashPasswordV2(string password, RandomNumberGenerator rng)
+        private byte[] HashPasswordV2(string password, RandomNumberGenerator rng)
         {
             const KeyDerivationPrf Pbkdf2Prf = KeyDerivationPrf.HMACSHA1; // default for Rfc2898DeriveBytes
             const int Pbkdf2IterCount = 1000; // default for Rfc2898DeriveBytes
@@ -196,7 +160,7 @@ namespace BackEnd.Controllers
             Buffer.BlockCopy(subkey, 0, outputBytes, 1 + SaltSize, Pbkdf2SubkeyLength);
             return outputBytes;
         }
-        private  bool VerifyHashedPasswordV2(string passwordHashed, string password)
+        private bool VerifyHashedPasswordV2(string passwordHashed, string password)
         {
             byte[] hashedPassword = Convert.FromBase64String(passwordHashed);
             const KeyDerivationPrf Pbkdf2Prf = KeyDerivationPrf.HMACSHA1; // default for Rfc2898DeriveBytes
@@ -220,7 +184,7 @@ namespace BackEnd.Controllers
             byte[] actualSubkey = KeyDerivation.Pbkdf2(password, salt, Pbkdf2Prf, Pbkdf2IterCount, Pbkdf2SubkeyLength);
             return ByteArraysEqual(actualSubkey, expectedSubkey);
         }
-        private  bool ByteArraysEqual(byte[] a, byte[] b)
+        private bool ByteArraysEqual(byte[] a, byte[] b)
         {
             if (a == null && b == null)
             {
@@ -238,34 +202,111 @@ namespace BackEnd.Controllers
             return areSame;
         }
         [HttpPost("Login")]
-        public IActionResult Login(Login model)
+        public IActionResult Login([FromBody] Login model)
         {
-  
-            var user = _context.Users.Where(e => e.Username.Equals(model.UserName)).ToList();
+            var user = _context.Users
+                               .Where(e => e.Username.Equals(model.UserName))
+                               .FirstOrDefault();
 
-            if (user!=null &&user.Count()>0)
+            if (user != null && VerifyHashedPasswordV2(user.Password, model.Password))
             {
-                if (VerifyHashedPasswordV2(user.First().Password, model.Password))
+                // Create claims including userId
+                var claims = new List<Claim>
+        {
+            new Claim("userId", user.Id.ToString())
+        };
+
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                var token = new JwtSecurityToken(
+                    issuer: _configuration["Jwt:Issuer"],
+                    audience: _configuration["Jwt:Audience"],
+                    claims: claims,
+                    expires: DateTime.Now.AddMinutes(double.Parse(_configuration["Jwt:ExpiryMinutes"])),
+                    signingCredentials: creds
+                );
+
+                // Prepare the user data to be returned
+                var userData = new
                 {
-                    var test = _configuration["Jwt:SecretKey"];
-
-                    var token = new JwtSecurityToken(
-
-                        signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"])), SecurityAlgorithms.HmacSha256),
-
-                     expires: DateTime.Now.AddMinutes(double.Parse(_configuration["jwt:ExpiryMinutes"])),
-                     issuer: _configuration["jwt:Issuer"]);
-
-                    return Ok(new
+                    user.Id,
+                    user.Username,
+                    user.Fname,
+                    user.Mname,
+                    user.Lname,
+                    user.PhoneNb,
+                    user.Email,
+                    user.Details,
+                    user.UserStatus,
+                    user.WorkGroup,
+                    Roles = user.UserRoles.Select(ur => new
                     {
-                        token = new JwtSecurityTokenHandler().WriteToken(token),
-                        data= user.First().Username,
-                        status = "success"
-                    });
-                }
+                        ur.Role?.Id,
+                        ur.Role?.RoleName,
+                        ur.Role?.RoleDetails
+                    }).ToList()
+                };
+
+                return Ok(new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    data = userData,
+                    status = "success"
+                });
             }
+
             return Unauthorized();
         }
+
+
+        [HttpGet("grouped-by-workgroup-id")]
+        public async Task<ActionResult<GroupedUsersResponse>> GetGroupedUsers(int? groupId = null)
+        {
+            try
+            {
+                // Fetch grouped users and join with CodesContent to get the group names
+                var groupedUsers = await (from user in _context.Users
+                                          join codeContent in _context.CodesContents
+                                          on user.WorkGroup equals codeContent.Id
+                                          where (user.WorkGroup.HasValue && user.WorkGroup == groupId)
+                                          group new { user, codeContent } by codeContent.CodeContentName into g
+                                          select new GroupedUsersDto
+                                          {
+                                              GroupName = g.Key, // Group name from CodesContent
+                                              Users = g.Select(x => new UserDto
+                                              {
+                                                  Id = x.user.Id,
+                                                  Username = x.user.Username,
+                                                  Fname = x.user.Fname,
+                                                  Mname = x.user.Mname,
+                                                  Lname = x.user.Lname,
+                                                  PhoneNb = x.user.PhoneNb,
+                                                  Email = x.user.Email
+                                              }).ToList()
+                                          }).ToListAsync();
+
+                // Calculate the total number of workgroups
+                int workGroupCount = groupedUsers.Count;
+
+                // Prepare the response
+                var response = new GroupedUsersResponse
+                {
+                    WorkGroupCount = workGroupCount,
+                    GroupedUsers = groupedUsers
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                // Log exception for debugging
+                Console.WriteLine($"Exception: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+
 
 
         //By Kamel Nazar
@@ -315,6 +356,65 @@ namespace BackEnd.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+        // PUT: api/Users
+        [HttpPut("UpdateUser")]
+        public async Task<IActionResult> UpdateUser([FromBody] User user)
+        {
+            try
+            {
+                var token = Request.Headers["Authorization"].FirstOrDefault();
+                if (token == null)
+                {
+                    return Ok("No token");
+                }
+                var jwtHelper = new JwtHelper(_context, _configuration);
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Token is missing.");
+                }
+
+                var userInfo = await jwtHelper.GetUserInfoFromJwt(token, Request.Path);
+                if (userInfo == null || userInfo.UserId == null)
+                {
+                    return NotFound("User information not found in the token.");
+                }
+
+                // Extract user ID from the token
+                int userId = userInfo.UserId.Value;
+                if (userId != user.Id)
+                {
+                    return BadRequest("User ID mismatch.");
+                }
+
+                // Find the existing user in the database
+                var existingUser = await _context.Users.FindAsync(userId);
+                if (existingUser == null)
+                {
+                    return NotFound("User not found in the database.");
+                }
+
+                // Update user fields
+                existingUser.Username = user.Username;
+                existingUser.Fname = user.Fname;
+                existingUser.Mname = user.Mname;
+                existingUser.Lname = user.Lname;
+                existingUser.PhoneNb = user.PhoneNb;
+                existingUser.Email = user.Email;
+                existingUser.UserStatus = user.UserStatus;
+                existingUser.WorkGroup = user.WorkGroup;
+
+                // Save changes to the database
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in UpdateUser: {ex.Message}");
+                return StatusCode(500, "Internal server error.");
+            }
+        }
+
 
 
         //mohamadbaydoun
@@ -348,11 +448,81 @@ namespace BackEnd.Controllers
                     return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while changing the password.");
                 }
             }
+
+
         }
+       
+
+        [HttpPost("ChangeOldPassword")]
+        public async Task<ActionResult<ChangePassword>> ChangeOldPassword([FromBody] ChangePasswordRequest request)
+        {
+            var ChangePasswordRequestResult = new ChangePasswordRequestResult();
+            try
+            {
+                var token = Request.Headers["Authorization"].FirstOrDefault();
+                if (token == null)
+                {
+                    return Ok("No token");
+                }
+                var jwtHelper = new JwtHelper(_context, _configuration);
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Token is missing.");
+                }
+
+                var userInfo = await jwtHelper.GetUserInfoFromJwt(token, Request.Path);
+                if (userInfo == null || userInfo.UserId == null)
+                {
+                    return NotFound("User information not found in the token.");
+                }
+
+                // Extract user ID from the token
+                int userId = userInfo.UserId.Value;
+                
+
+                var user = await _context.Users.FindAsync(userId);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                var previewHashed = GetHashPassword(request.PreviousPassword);
+                var newPasswordHashed = GetHashPassword(request.NewPassword);
+
+                // Check if the previous password is correct
+                if (!VerifyHashedPasswordV2(user.Password,previewHashed))
+                {
+                    return BadRequest("Previous password is incorrect.");
+                }
+
+
+                // Update the password
+                user.Password = newPasswordHashed;
+                await _context.SaveChangesAsync();
+
+                ChangePasswordRequestResult.Success = true;
+                return Ok(ChangePasswordRequestResult);
+            }
+            catch (Exception ex)
+            {
+                // Return an appropriate HTTP response
+                if (ex is ArgumentException)
+                {
+                    return BadRequest(ex.Message);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while changing the password.");
+                }
+            }
+        }
+
         public class ChangePasswordRequest
         {
             public int Id { get; set; }
-            public string Password { get; set; }
+            public string? Password { get; set; }
+            public string? PreviousPassword { get; set; }
+            public string? NewPassword { get; set; }
+
         }
 
         public class ChangePasswordRequestResult
@@ -414,7 +584,7 @@ namespace BackEnd.Controllers
                 return BadRequest(bulkOperationResult);
             }
         }
-
+       
         public class BulkOperationResult
         {
             public bool Success { get; set; }

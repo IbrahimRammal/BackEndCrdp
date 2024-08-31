@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BackEnd.Models;
+﻿namespace BackEnd.Models;
 
 public partial class User
 {
@@ -19,13 +16,15 @@ public partial class User
 
     public string? Email { get; set; }
 
-    public string Password { get; set; } = null!;
+    //public string Password { get; set; } = null!;
+    public string? Password { get; set; } 
 
     public string? Details { get; set; }
 
     public bool? UserStatus { get; set; }
 
     public int? WorkGroup { get; set; }
+    public bool? Isadmin { get; set; }
 
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

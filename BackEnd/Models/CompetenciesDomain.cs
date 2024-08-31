@@ -13,11 +13,11 @@ public partial class CompetenciesDomain
 
     public int? UserCreated { get; set; }
 
-    public DateTime? DateCreated { get; set; } = DateTime.Now;
+    public DateTime? DateCreated { get; set; }
 
     public int? UserModified { get; set; }
 
-    public DateTime? DateModified { get; set; } = DateTime.Now;     
+    public DateTime? DateModified { get; set; }
 
     public virtual Competencies? CidNavigation { get; set; }
 }

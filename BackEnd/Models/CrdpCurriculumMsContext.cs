@@ -200,6 +200,8 @@ public partial class CrdpCurriculumMsContext : DbContext
 
         modelBuilder.Entity<Competencies>(entity =>
         {
+            entity.HasIndex(e => new { e.CompetenceLevel, e.Id, e.CompetenceParentId }, "_dta_index_Competencies_10_1010102639__K9_K1_K6_3_4");
+
             entity.Property(e => e.CompetenceDetails).HasMaxLength(500);
             entity.Property(e => e.CompetenceName).HasMaxLength(500);
             entity.Property(e => e.DateCreated).HasColumnType("datetime");
@@ -446,10 +448,15 @@ public partial class CrdpCurriculumMsContext : DbContext
                 .HasNoKey()
                 .ToView("VConceptsCascade");
 
+            entity.Property(e => e.ConceptDetails1).HasMaxLength(500);
+            entity.Property(e => e.ConceptDetails2).HasMaxLength(500);
+            entity.Property(e => e.ConceptDetails3).HasMaxLength(500);
+            entity.Property(e => e.ConceptDetails4).HasMaxLength(500);
             entity.Property(e => e.ConceptName1).HasMaxLength(500);
             entity.Property(e => e.ConceptName2).HasMaxLength(500);
             entity.Property(e => e.ConceptName3).HasMaxLength(500);
             entity.Property(e => e.ConceptName4).HasMaxLength(500);
+            entity.Property(e => e.IdNumber1).HasMaxLength(50);
         });
 
         modelBuilder.Entity<VconceptsCascadeClass>(entity =>

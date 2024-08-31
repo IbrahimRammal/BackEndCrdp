@@ -27,11 +27,13 @@ public partial class ConceptTree
 
     public int? UserCreated { get; set; }
 
-    public DateTime? DateCreated { get; set; } = DateTime.Now;
+    public DateTime? DateCreated { get; set; }
 
     public int? UserModified { get; set; }
 
-    public DateTime? DateModified { get; set; } = DateTime.Now; 
+    public DateTime? DateModified { get; set; }
+
+    public int? GroupId { get; set; }
 
     public virtual ICollection<CompetenciesConceptTree> CompetenciesConceptTrees { get; set; } = new List<CompetenciesConceptTree>();
 
