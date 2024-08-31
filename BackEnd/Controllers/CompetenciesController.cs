@@ -31,7 +31,7 @@ namespace BackEnd.Controllers
         }
         public static class GlobalConstants
         {
-            public static string PageName { get; set; } = "competencies";
+            public static string PageName { get; set; } = "competences_private_page";
 
         }
         //a function to not repeat code to check Authorization on function Level
