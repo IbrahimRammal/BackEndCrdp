@@ -64,6 +64,17 @@ namespace BackEnd.Controllers
         [HttpGet("GetClassesByConceptID")]
         public async Task<ActionResult<List<int>>> GetClassesByConceptID(int conceptId)
         {
+
+            var jwtHelper = new JwtHelper(_context, _configuration);
+            var permission1 = (await jwtHelper.CheckPermission(Request, "concept_tree", "manage")).Success;
+            var permission2 = (await jwtHelper.CheckPermission(Request, "concept_tree", "edit")).Success;
+
+            //Authorization 
+            if (!permission1 && !permission2)
+            {
+                return Ok("Not Authorized");
+            }
+
             try
             {
                 // Retrieve the list of ClassIds associated with the given conceptId

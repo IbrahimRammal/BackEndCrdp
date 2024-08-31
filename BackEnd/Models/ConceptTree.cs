@@ -14,6 +14,7 @@ public partial class ConceptTree
     public int? ConceptType { get; set; }
 
     public int? ConceptDomain { get; set; }
+    public int? GroupId { get; set; }
 
     public int? ConceptField { get; set; }
 

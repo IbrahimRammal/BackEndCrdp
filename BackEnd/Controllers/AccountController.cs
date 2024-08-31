@@ -53,7 +53,7 @@ namespace BackEnd.Controllers
                 authclaims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
                 var token = new JwtSecurityToken(
                     claims: authclaims,
-                    signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"])), SecurityAlgorithms.HmacSha256),
+                    signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"])), SecurityAlgorithms.Aes256Encryption),
 
                  expires: DateTime.Now.AddMinutes(double.Parse(_configuration["jwt:ExpiryMinutes"])),
                  issuer: _configuration["jwt:Issuer"]);

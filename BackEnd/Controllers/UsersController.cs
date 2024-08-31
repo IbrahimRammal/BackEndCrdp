@@ -127,7 +127,6 @@ namespace BackEnd.Controllers
             user.UserStatus = true;
             //_context.Users.Remove(user);
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
 
@@ -201,6 +200,30 @@ namespace BackEnd.Controllers
             }
             return areSame;
         }
+        public class PermissionsMenu
+        {
+            public bool CanEdit { get; set; }
+            public bool CanAdd { get; set; }
+            public bool CanDelete { get; set; }
+            public bool CanView { get; set; }
+        }
+
+        // GET: api/ConceptTrees
+        [HttpGet("GetMenuItems")]
+        public async Task<ActionResult<IEnumerable<PermissionsMenu>>> GetMenuItems()
+        {
+            string[] pages = { "concept_tree" };
+
+            var jwtHelper = new JwtHelper(_context, _configuration);
+            var menuItems = (await jwtHelper.CheckMultiplePermissions(Request, pages));
+            return Ok(
+                menuItems
+              );
+        }
+
+
+
+
         [HttpPost("Login")]
         public IActionResult Login([FromBody] Login model)
         {

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BackEnd.Models;
 using Newtonsoft.Json;
 using BackEnd.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace BackEnd.Controllers
 {
@@ -121,25 +122,50 @@ namespace BackEnd.Controllers
             var service = new Service();
             try
             {
-                var key = form["key"];
                 var values = form["values"];
+                var valuesDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(values);
 
                 JsonConvert.PopulateObject(values, service);
 
-                service.Parent = _context.Services.FirstOrDefault(x => x.Id == service.ParentId)?.Parent;
-                _context.Services.Add(service);
-                await _context.SaveChangesAsync();
+                if (valuesDictionary.TryGetValue("parentId", out var parentIdObj))
+                {
+                    if (int.TryParse(parentIdObj.ToString(), out var parentId))
+                    {
+                        service.ParentId = parentId;
+                        var parentService = await _context.Services.FindAsync(parentId);
+                        if (parentService != null)
+                        {
+                            service.Parent = parentService.ServiceName;
+                        }
+                        else
+                        {
+                            // Handle the case where the parent service doesn't exist
+                            return BadRequest($"Parent service with ID {parentId} does not exist.");
+                        }
+
+                        _context.Services.Add(service);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+                else
+                {
+                    // Handle the case where the 'parentId' is not provided
+                    service.ParentId = null;
+                    service.Parent = null;
+
+                    _context.Services.Add(service);
+                    await _context.SaveChangesAsync();
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-
+                // Log the exception or handle it as needed
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing the request.");
             }
 
-
-            return CreatedAtAction("GetServices", new { id = service.Id }, service);
+            return CreatedAtAction(nameof(GetServices), new { id = service.Id }, service);
         }
-
 
         [HttpPut("UpdateServices")]
         [Consumes("application/x-www-form-urlencoded")]
@@ -147,24 +173,73 @@ namespace BackEnd.Controllers
         {
             try
             {
-                var key = form["key"];
+                //var key = form["key"];
                 var values = form["values"];
-                var service = _context.Services.First(o => o.Id.Equals(key.ToString()));
+                var valuesDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(values);
 
-                JsonConvert.PopulateObject(values, service);
-                service.Parent = _context.Services.FirstOrDefault(x => x.Id == service.ParentId)?.Parent;
-                //Validate(order);
-                //if (!ModelState.IsValid)
-                //    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState.GetFullErrorMessage());
+                // Assume form is of type IFormCollection
+                if (form.TryGetValue("key", out var keyValue))
+                {
+                    // Parse the key value to the appropriate type (e.g., int or Guid)
+                    if (int.TryParse(keyValue, out var key))
+                    {
+                        var service = _context.Services.Where(o => o.Id == key).FirstOrDefault();
 
-                await _context.SaveChangesAsync();
+                        if (service != null)
+
+                        {
+                            JsonConvert.PopulateObject(values, service);
+
+                            if (valuesDictionary.TryGetValue("parentId", out var parentIdObj))
+                            {
+                                if (int.TryParse(parentIdObj.ToString(), out var parentId))
+                                {
+                                    service.ParentId = parentId;
+                                    var parentService = await _context.Services.FindAsync(parentId);
+                                    if (parentService != null)
+                                    {
+                                        service.Parent = parentService.ServiceName;
+                                    }
+                                    else
+                                    {
+                                    }
+
+                                }
+                            }
+
+
+                            //service.Parent = _context.Services.Where(o => o.Id == service.ParentId).FirstOrDefault()?.Parent;
+                            //Validate(order);
+                            //if (!ModelState.IsValid)
+                            //    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState.GetFullErrorMessage());
+
+                            await _context.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            // Handle case where no service is found with the given key
+                        }
+                    }
+                    else
+                    {
+                        // Handle invalid key format
+                    }
+                }
+                else
+                {
+                    // Handle case where "key" is not present in the form
+                }
+
+                // Handle form["values"] similarly if necessary
+
+               
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                return false;
+                // Log the exception or handle it as needed
+                Console.WriteLine($"Error: {ex.Message}");
+                throw new Exception($"Error: {ex.Message}");
             }
-
 
             return true;
         }

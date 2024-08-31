@@ -9,7 +9,12 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Net;
 using System.Net.Http.Formatting;
-
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using BackEnd.Utilities;
+using Newtonsoft.Json.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -38,9 +43,22 @@ namespace BackEnd.Controllers
 
 
 
+
+        //ManageUserRoleReport
+
+
         [HttpGet("GetAllUserRoleDetailed")]
         public async Task<ActionResult<IEnumerable<dynamic>>> GetAllUserRoleDetailed()
         {
+
+            var jwtHelper = new JwtHelper(_context, _configuration);
+            var userInfo = await jwtHelper.GetUserInfoFromJwt(Request.Headers["Authorization"].First(), Request.Path);
+
+            if (userInfo == null)
+            {
+                return NotFound("user not found.");
+            }
+        
             var result = await (from ur in _context.UserRoles
                                 join u in _context.Users on ur.UserId equals u.Id
                                 join r in _context.Roles on ur.RoleId equals r.Id into roleGroup
@@ -61,10 +79,8 @@ namespace BackEnd.Controllers
                                 })
                                 .ToListAsync();
 
-            // Get all the unique user IDs from the result
             var allUserIds = await _context.Users.Select(u => u.Id).ToListAsync();
 
-            // Check if any users are missing from the result and add them with an empty role and permissions
             foreach (var userId in allUserIds)
             {
                 if (!result.Any(x => x.UserId == userId))
@@ -81,13 +97,15 @@ namespace BackEnd.Controllers
                 }
             }
 
-            return Ok(result);
+            return Ok(new
+            {
+                Data = result,
+                Permissions = new
+                {
+                    userInfo.ServiceNames
+                }
+            }); ;
         }
-
-
-
-
-
 
 
         // GET api/<UserRoleController>/5

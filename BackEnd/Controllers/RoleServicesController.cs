@@ -115,11 +115,16 @@ namespace BackEnd.Controllers
         {
 
             try
-            {
-
-          
+            {     
             if (roleModel != null)
             {
+                var existingRole = _context.Roles.FirstOrDefault(r => r.RoleName == roleModel.nameRole);
+                if (existingRole != null)
+                {
+                    return BadRequest($"A role with the name '{roleModel.nameRole}' already exists.");
+                }
+
+
                 Role role = new Role();
                 role.RoleName = roleModel.nameRole;
                 _context.Roles.Add(role);
