@@ -1,5 +1,6 @@
 ﻿using BackEnd.Class;
 using BackEnd.Data;
+using BackEnd.Helper;
 using BackEnd.Models;
 using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Identity;
@@ -269,12 +270,44 @@ namespace BackEnd.Controllers
         }
 
 
-
-        // GET: api/Competencies
         [HttpGet("GetCompetencies")]
         public async Task<ActionResult<IEnumerable<Competencies>>> GetCompetencies()
         {
-            return await _context.Competencies.ToListAsync();
+            //Authorization
+            if (!await IsAuthorized(Request, "manage", "view"))
+            {
+                return Ok("Not Authorized");
+            }
+
+            //getuserdata
+            var jwtHelper = new JwtHelper(_context, _configuration);
+            var token = Request.Headers["Authorization"].FirstOrDefault();
+            if (token == null)
+            {
+                return Ok("No Token");
+            }
+            var userInfo = await jwtHelper.GetUserInfoFromJwt(token, GlobalConstants.PageName);
+            if (userInfo == null)
+            {
+                return Ok("No User Founded");
+            }
+
+            var userId = userInfo.UserId;
+            var isAdmin = userInfo.isAdmin ?? false;
+
+            var competencies = from c in _context.Competencies
+                               join urp in _context.UserRolePermissions on c.ConceptField equals urp.ConceptFiled into urpGroup //joined with permissions
+                               from urp in urpGroup.DefaultIfEmpty()
+                               join ur in _context.UserRoles on urp.UserRoleId equals ur.Id into urGroup
+                               from ur in urGroup.DefaultIfEmpty()
+                               where (isAdmin((ur.UserId == userId  c.UserCreated == userId) && urp.Class == c.Id))
+                        select c;
+
+            var competenciesResult = await competencies
+                .AsNoTracking()
+                .ToListAsync();
+
+            return Ok(competenciesResult);
         }
 
 
