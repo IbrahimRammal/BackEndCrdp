@@ -35,6 +35,27 @@ namespace BackEnd.Controllers
 
         }
 
+
+        [HttpGet("GetMenuItems")]
+        public async Task<ActionResult> GetMenuItems()
+        {
+            string[] pages = {
+                "concept_tree" ,
+                "users_pages",
+                "settings_pages",
+                "competences_private_page",
+                "dashboard_pages"
+            };
+
+            var jwtHelper = new JwtHelper(_context, _configuration);
+            var menuItems = (await jwtHelper.CheckMultiplePermissions(Request, pages));
+            return Ok(
+                menuItems
+              );
+        }
+  
+
+
         // GET: api/Users
         [HttpGet("GetUsers")]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
