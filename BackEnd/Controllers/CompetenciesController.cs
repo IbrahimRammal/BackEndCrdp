@@ -29,6 +29,30 @@ namespace BackEnd.Controllers
             _configuration = configuration;
 
         }
+        public static class GlobalConstants
+        {
+            public static string PageName { get; set; } = "competencies";
+
+        }
+        //a function to not repeat code to check Authorization on function Level
+        private async Task<bool> IsAuthorized(HttpRequest? request, params string[] permissions)
+        {
+            var jwtHelper = new JwtHelper(_context, _configuration);
+
+            foreach (var permission in permissions)
+            {
+                if ((await jwtHelper.CheckPermission(Request, GlobalConstants.PageName, permission)).Success)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+      
+
+
 
         [HttpGet("count-by-type")]
         public async Task<ActionResult<List<CompetenceTypeCountDto>>> GetCompetenciesCountByType()
@@ -269,7 +293,6 @@ namespace BackEnd.Controllers
             }
         }
 
-
         [HttpGet("GetCompetencies")]
         public async Task<ActionResult<IEnumerable<Competencies>>> GetCompetencies()
         {
@@ -300,8 +323,8 @@ namespace BackEnd.Controllers
                                from urp in urpGroup.DefaultIfEmpty()
                                join ur in _context.UserRoles on urp.UserRoleId equals ur.Id into urGroup
                                from ur in urGroup.DefaultIfEmpty()
-                               where (isAdmin((ur.UserId == userId  c.UserCreated == userId) && urp.Class == c.Id))
-                        select c;
+                               where (isAdmin || ((ur.UserId == userId || c.UserCreated == userId) && urp.Class == c.Id))
+                               select c;
 
             var competenciesResult = await competencies
                 .AsNoTracking()
@@ -309,7 +332,6 @@ namespace BackEnd.Controllers
 
             return Ok(competenciesResult);
         }
-
 
         // GET: api/Competencies/5
         [HttpGet("GetCompetenciesById{id}")]

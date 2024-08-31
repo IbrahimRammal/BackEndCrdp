@@ -86,7 +86,7 @@ namespace BackEnd.Controllers
 
             return NoContent();
         }
-    
+
         [HttpPost("InsertUser")]
         [Consumes("application/x-www-form-urlencoded")]
         public async Task<ActionResult<User>> PostUser([FromForm] IFormCollection form)
@@ -127,6 +127,7 @@ namespace BackEnd.Controllers
             user.UserStatus = true;
             //_context.Users.Remove(user);
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
 
@@ -200,30 +201,6 @@ namespace BackEnd.Controllers
             }
             return areSame;
         }
-        public class PermissionsMenu
-        {
-            public bool CanEdit { get; set; }
-            public bool CanAdd { get; set; }
-            public bool CanDelete { get; set; }
-            public bool CanView { get; set; }
-        }
-
-        // GET: api/ConceptTrees
-        [HttpGet("GetMenuItems")]
-        public async Task<ActionResult<IEnumerable<PermissionsMenu>>> GetMenuItems()
-        {
-            string[] pages = { "concept_tree" };
-
-            var jwtHelper = new JwtHelper(_context, _configuration);
-            var menuItems = (await jwtHelper.CheckMultiplePermissions(Request, pages));
-            return Ok(
-                menuItems
-              );
-        }
-
-
-
-
         [HttpPost("Login")]
         public IActionResult Login([FromBody] Login model)
         {
@@ -474,7 +451,7 @@ namespace BackEnd.Controllers
 
 
         }
-       
+
 
         [HttpPost("ChangeOldPassword")]
         public async Task<ActionResult<ChangePassword>> ChangeOldPassword([FromBody] ChangePasswordRequest request)
@@ -501,7 +478,7 @@ namespace BackEnd.Controllers
 
                 // Extract user ID from the token
                 int userId = userInfo.UserId.Value;
-                
+
 
                 var user = await _context.Users.FindAsync(userId);
                 if (user == null)
@@ -512,7 +489,7 @@ namespace BackEnd.Controllers
                 var newPasswordHashed = GetHashPassword(request.NewPassword);
 
                 // Check if the previous password is correct
-                if (!VerifyHashedPasswordV2(user.Password,previewHashed))
+                if (!VerifyHashedPasswordV2(user.Password, previewHashed))
                 {
                     return BadRequest("Previous password is incorrect.");
                 }
@@ -607,7 +584,7 @@ namespace BackEnd.Controllers
                 return BadRequest(bulkOperationResult);
             }
         }
-       
+
         public class BulkOperationResult
         {
             public bool Success { get; set; }

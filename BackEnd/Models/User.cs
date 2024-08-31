@@ -26,6 +26,5 @@ public partial class User
     public int? WorkGroup { get; set; }
     public bool? Isadmin { get; set; }
 
-    public bool? Isadmin { get; set; }
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

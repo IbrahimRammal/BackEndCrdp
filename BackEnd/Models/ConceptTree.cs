@@ -34,7 +34,6 @@ public partial class ConceptTree
 
     public DateTime? DateModified { get; set; }
 
-    public int? GroupId { get; set; }
 
     public virtual ICollection<CompetenciesConceptTree> CompetenciesConceptTrees { get; set; } = new List<CompetenciesConceptTree>();
 

@@ -5,6 +5,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Data;
+using BackEnd.Helper;
 
 namespace BackEnd.Controllers
 {
@@ -14,6 +15,87 @@ namespace BackEnd.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly CrdpCurriculumMsContext _context;
+
+
+        public static class GlobalConstants
+        {
+            public static string PageName { get; set; } = "concept_tree";
+        }
+
+
+        //a function to not repeat code to check Authorization on function Level
+        private async Task<bool> IsAuthorized(HttpRequest? request, params string[] permissions)
+        {
+            var jwtHelper = new JwtHelper(_context, _configuration);
+
+            foreach (var permission in permissions)
+            {
+                if ((await jwtHelper.CheckPermission(Request, GlobalConstants.PageName, permission)).Success)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        //added by mohamad baydoun to apply permissions on the page buttons
+        [HttpGet("GetConceptTreesPermissions")]
+        public async Task<ActionResult<IEnumerable<Permissions>>> GetConceptTreesPermissions()
+        {
+            var token = Request.Headers["Authorization"].FirstOrDefault();
+            if (token == null)
+            {
+                return Ok("No Token");
+            }
+            var jwtHelper = new JwtHelper(_context, _configuration);
+            var userInfo = await jwtHelper.GetUserInfoFromJwt(token, GlobalConstants.PageName);
+
+            if (userInfo == null)
+            {
+                return Ok("userInfo null");
+            }
+
+            var permissions = new Permissions();
+
+            if (userInfo.ServiceNames.Any(sn => sn.ToLower().Contains("manage")) || (userInfo.isAdmin ?? false))
+            {
+                permissions.CanEdit = true;
+                permissions.CanAdd = true;
+                permissions.CanDelete = true;
+                permissions.CanView = true;
+            }
+            else if (!userInfo.ServiceNames.Any(sn => sn.Contains("view")))
+            {
+                permissions.CanEdit = false;
+                permissions.CanAdd = false;
+                permissions.CanDelete = false;
+                permissions.CanView = false;
+            }
+            else
+            {
+                permissions.CanEdit = userInfo.ServiceNames.Any(sn => sn.Contains("edit"));
+                permissions.CanAdd = userInfo.ServiceNames.Any(sn => sn.Contains("add"));
+                permissions.CanDelete = userInfo.ServiceNames.Any(sn => sn.Contains("delete"));
+                permissions.CanView = userInfo.ServiceNames.Any(sn => sn.Contains("view"));
+            }
+
+            return Ok(
+
+                permissions
+
+              );
+        }
+
+        public class Permissions
+        {
+            public bool CanEdit { get; set; }
+            public bool CanAdd { get; set; }
+            public bool CanDelete { get; set; }
+            public bool CanView { get; set; }
+        }
+
+
         public ConceptTreesController(CrdpCurriculumMsContext context, IConfiguration configuration)
         {
             _context = context;
@@ -26,6 +108,10 @@ namespace BackEnd.Controllers
         [Consumes("application/x-www-form-urlencoded")]
         public async Task<IActionResult> DeleteConceptTrees([FromForm] IFormCollection form)
         {
+            if (!await IsAuthorized(Request, "manage", "delete"))
+            {
+                return Ok("Not Authorized");
+            }
             var keyString = form["key"];
 
             // Parse the key as an integer
@@ -142,9 +228,32 @@ namespace BackEnd.Controllers
             return await _context.ConceptTrees.ToListAsync();
         }
 
+        //changed by mohamd baydoun to apply permissions on data level
         [HttpGet("GetConceptTreesbyClasses")]
-        public async Task<ActionResult<IEnumerable<ConceptTree>>> GetConceptTreesbyClasses()
+        public async Task<ActionResult<IEnumerable<ConceptTreeDto>>> GetConceptTreesbyClasses()
         {
+            //Authorization
+            if (!await IsAuthorized(Request, "manage", "view"))
+            {
+                return Ok("Not Authorized");
+            }
+
+            //getuserdata
+            var jwtHelper = new JwtHelper(_context, _configuration);
+            var token = Request.Headers["Authorization"].FirstOrDefault();
+            if (token == null)
+            {
+                return Ok("No Token");
+            }
+            var userInfo = await jwtHelper.GetUserInfoFromJwt(token, GlobalConstants.PageName);
+            if (userInfo == null)
+            {
+                return Ok("No User Founded");
+            }
+
+            var userId = userInfo.UserId;
+            var isAdmin = userInfo.isAdmin ?? false;
+
             var conceptTreeWithClasses = from ct in _context.ConceptTrees
                                          join ctc in _context.ConceptTreeClasses
                                          on ct.Id equals ctc.Ctid into ctcGroup
@@ -152,6 +261,13 @@ namespace BackEnd.Controllers
                                          join cc in _context.CodesContents
                                          on ctc.ClassId equals cc.Id into ccGroup
                                          from cc in ccGroup.DefaultIfEmpty()
+                                         join urp in _context.UserRolePermissions
+                                         on ct.ConceptField equals urp.ConceptFiled
+                                         into urpGroup //joined with permissions
+                                         from urp in urpGroup.DefaultIfEmpty()
+                                         join ur in _context.UserRoles on urp.UserRoleId equals ur.Id into urGroup
+                                         from ur in urGroup.DefaultIfEmpty()
+                                         where ((isAdmin || ur.UserId == userId || ct.UserCreated == userId) && urp.Class == ctc.ClassId)
                                          group cc.CodeContentName by new
                                          {
                                              ct.Id,
@@ -188,13 +304,13 @@ namespace BackEnd.Controllers
                                              ClassNames = grouped.Where(name => name != null).ToList()
                                          };
 
-            // Execute the query and map to ConceptTreeDto entities
             var conceptTrees = await conceptTreeWithClasses
                 .AsNoTracking()
                 .ToListAsync();
 
             return Ok(conceptTrees);
         }
+
 
 
         // GET: api/ConceptTrees/5
@@ -278,6 +394,12 @@ namespace BackEnd.Controllers
         [Consumes("application/x-www-form-urlencoded")]
         public async Task<ActionResult<ConceptTree>> PostConceptTrees([FromForm] IFormCollection form)
         {
+
+            //Authorization
+            if (!await IsAuthorized(Request, "manage", "add"))
+            {
+                return Ok("Not Authorized");
+            }
             var ConceptTrees = new ConceptTree();
             try
             {
@@ -404,6 +526,10 @@ namespace BackEnd.Controllers
         [Consumes("application/x-www-form-urlencoded")]
         public async Task<IActionResult> PutConceptTrees([FromForm] IFormCollection form)
         {
+            if (!await IsAuthorized(Request, "manage", "edit"))
+            {
+                return Ok("Not Authorized");
+            }
             try
             {
                 var key = form["key"];
